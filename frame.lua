@@ -26,79 +26,97 @@ T.BodyguardFrame = {}
 
 local bf = T.BodyguardFrame
 
-local frame
+local locked = true
 
-local created = false
-
-local function Create()
-    if frame and created then return end
-
-    local WIDTH = 200
-    local HEIGHT = 93
-
-    local backdrop = {
-        bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
-        edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
-        tile = true,
-        edgeSize = 16,
-        tileSize = 32,
-        insets = {
-            left = 2.5,
-            right = 2.5,
-            top = 2.5,
-            bottom = 2.5
-        }
+local backdrop = {
+    bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
+    edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
+    tile = true,
+    edgeSize = 16,
+    tileSize = 32,
+    insets = {
+        left = 2.5,
+        right = 2.5,
+        top = 2.5,
+        bottom = 2.5
     }
+}
 
-    frame = CreateFrame("Frame", nil, UIParent)
+local frame = CreateFrame("Frame", nil, UIParent)
 
-    frame:Hide()
+-- DEBUG
+bf.Frame = frame
 
-    frame:EnableMouse(false)
-    frame:SetMovable(false)
+frame:Hide()
 
-    frame:SetSize(WIDTH, HEIGHT)
+frame:EnableMouse(false)
+frame:SetMovable(false)
+
+frame:SetBackdrop(backdrop)
+
+frame.nameLabel = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+frame.nameLabel:SetWidth(100)
+frame.nameLabel:SetHeight(16)
+frame.nameLabel:SetPoint("TOPLEFT", frame, "TOPLEFT", 5, -5)
+frame.nameLabel:SetText("Bodyguard")
+frame.nameLabel:SetJustifyH("LEFT")
+
+frame.statusLabel = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+frame.statusLabel:SetWidth(70)
+frame.statusLabel:SetHeight(16)
+frame.statusLabel:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -5, -5)
+frame.statusLabel:SetText("Unknown")
+frame.statusLabel:SetJustifyH("RIGHT")
+
+frame.healthBar = CreateFrame("StatusBar", nil, frame)
+local hb = frame.healthBar
+hb:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar", "ARTWORK")
+hb:SetMinMaxValues(0, 1)
+hb:SetValue(1)
+hb:SetPoint("TOP", frame.nameLabel, "BOTTOM", 0, -5)
+hb:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", 5, 5)
+hb:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -5, 5)
+hb:SetStatusBarColor(0, 1, 0)
+
+frame.healthLabel = hb:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+frame.healthLabel:SetHeight(25)
+frame.healthLabel:SetPoint("TOPLEFT", frame.healthBar, "TOPLEFT")
+frame.healthLabel:SetPoint("BOTTOMRIGHT", frame.healthBar, "BOTTOMRIGHT")
+frame.healthLabel:SetTextColor(1, 1, 1)
+frame.healthLabel:SetFont("Fonts\\FRIZQT__.TTF", 20, "OUTLINE")
+
+function bf:ResetSettings()
     frame:ClearAllPoints()
+    frame:SetWidth(200)
+    frame:SetHeight(60)
     frame:SetPoint("CENTER")
-
-    frame:SetBackdrop(backdrop)
-
-    frame.nameLabel = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-    frame.nameLabel:SetWidth(WIDTH)
-    frame.nameLabel:SetHeight(16)
-    frame.nameLabel:SetPoint("TOP", frame, "TOP", 0, -5)
-    frame.nameLabel:SetText("Bodyguard")
-
-    frame.healthBar = frame:CreateTexture(nil, "ARTWORK")
-    frame.healthBar:SetTexture("Interface\TargetingFrame\UI-StatusBar")
-    frame.healthBar:SetVertexColor(0, 1, 0)
-    frame.healthBar:SetWidth())
-
-    frame.healthLabel = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-    frame.healthLabel:SetWidth(WIDTH)
-    frame.healthLabel:SetHeight(16)
-    frame.healthLabel:SetPoint("CENTER", frame.healthBar, "CENTER")
-
-    created = true
+    self:SaveSettings()
 end
 
 function bf:UpdateSettings()
-    local settings = T.Global.FrameSettings
+    local settings = T.DB.FrameSettings
 
     frame:ClearAllPoints()
     frame:SetWidth(settings.Width)
     frame:SetHeight(settings.Height)
-    frame:SetPoint(settings.Point, settings.Offset.X, settings.Offset.Y)
+    if settings.RelPoint then
+        frame:SetPoint(settings.Point, nil, settings.RelPoint, settings.Offset.X, settings.Offset.Y)
+    else
+        frame:SetPoint(settings.Point, settings.Offset.X, settings.Offset.Y)
+    end
+
+    self:SaveSettings()
 end
 
 function bf:SaveSettings()
-    local settings = T.Global.FrameSettings
+    local settings = T.DB.FrameSettings
 
     settings.Width = frame:GetWidth()
     settings.Height = frame:GetHeight()
     settings.Scale = frame:GetScale()
-    local point, _, _, x, y = frame:GetPoint(1)
+    local point, _, relPoint, x, y = frame:GetPoint(1)
     settings.Point = point
+    settings.RelPoint = relPoint
     settings.Offset.X = x
     settings.Offset.Y = y
 end
@@ -115,19 +133,46 @@ function bf:UpdateStatus(status)
     frame.statusLabel:SetText(text)
 end
 
+local function round(num)
+    return math.floor(num + 0.5)
+end
+
 function bf:UpdateHealthBar(health, maxHealth)
     local ratio = (maxHealth > 0) and (health / maxHealth) or 0
 
-    frame.healthBar:SetTexCoord(0, ratio, 0, 1)
+    local red = 1
+    local green = 1
+
+    if ratio > 0.5 then
+        red = 2 - ratio * 2
+    elseif ratio < 0.5 then
+        green = ratio * 2
+    end
+
+    hb:SetStatusBarColor(red, green, 0)
+
+    hb:SetMinMaxValues(0, maxHealth)
+    hb:SetValue(health)
+
+    frame.healthLabel:SetText(("%d%%"):format(round(ratio * 100)))
 end
 
 function bf:Show()
-    Create()
+    if self:IsShowing() then return end
     frame:Show()
 end
 
 function bf:Hide()
+    if not self:IsShowing() then return end
     frame:Hide()
+end
+
+function bf:IsShowing()
+    return frame:IsVisible()
+end
+
+function bf:IsLocked()
+    return locked
 end
 
 function bf:Unlock()
@@ -135,7 +180,14 @@ function bf:Unlock()
     frame:SetMovable(true)
 
     frame:SetScript("OnMouseDown", function(f) f:StartMoving() end)
-    frame:SetScript("OnMouseUp", function(f) f:StopMovingOrSizing() end)
+    frame:SetScript("OnMouseUp", function(f)
+        f:StopMovingOrSizing()
+        bf:SaveSettings()
+    end)
+
+    if not self:IsShowing() then self:Show() end
+
+    locked = false
 end
 
 function bf:Lock()
@@ -146,4 +198,6 @@ function bf:Lock()
     frame:SetScript("OnMouseUp", nil)
 
     self:SaveSettings()
+
+    locked = true
 end

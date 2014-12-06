@@ -35,19 +35,21 @@ function T:ADDON_LOADED(name)
 
     self.DB = BodyguardHealthDB
 
-    if self.DB.FrameSettings ~= "table" then
-        self.DB.FrameSettings = {
-            Width = 200,
-            Height = 93,
-            Point = "CENTER",
-            Offset = {
-                X = 0,
-                Y = 0
-            }
-        }
+    if type(self.DB.FrameSettings) ~= "table" then
+        self.BodyguardFrame:ResetSettings()
+    else
+        self.BodyguardFrame:UpdateSettings()
     end
 
-    self.BodyguardFrame:UpdateSettings()
+    if type(BodyguardHealthCharDB) ~= "table" then
+        BodyguardHealthCharDB = {}
+    end
+
+    self.CharDB = BodyguardHealthCharDB
+
+    if type(self.CharDB.HasBodyguard) ~= "boolean" then
+        self.CharDB.HasBodyguard = false
+    end
 
     local lbg = self.LBG
 
@@ -56,18 +58,29 @@ function T:ADDON_LOADED(name)
 
         if status == lib.Status.Active then
             T.BodyguardFrame:UpdateName(lib:GetName())
-            T.BodyguardFrame:UpdateHealth(lib:GetHealth(), lib:GetMaxHealth())
+            T.BodyguardFrame:UpdateHealthBar(lib:GetHealth(), lib:GetMaxHealth())
             T.BodyguardFrame:Show()
+        elseif status == lib.Status.Inactive and T.BodyguardFrame:IsLocked() then
+            T.BodyguardFrame:Hide()
         end
+
+        T.CharDB.HasBodyguard = status ~= lib.Status.Inactive
     end)
 
     lbg:RegisterCallback("health", function(lib, health, maxhealth)
-        T.BodyguardFrame:UpdateHealth(health, maxhealth)
+        T.BodyguardFrame:UpdateHealthBar(health, maxhealth)
     end)
 
     lbg:RegisterCallback("name", function(lib, name)
         T.BodyguardFrame:UpdateName(name)
     end)
+
+    if self.CharDB.HasBodyguard then
+        self.BodyguardFrame:Show()
+    end
+
+    -- DEBUG
+    _G["BodyguardHealth"] = self
 end
 
 T.Frame = CreateFrame("Frame")
@@ -79,7 +92,12 @@ T.Frame:SetScript("OnEvent", function(frame, event, ...)
 end)
 
 for k, _ in pairs(T) do
-    if k:match("^[A-Z0-9]$") then
+    if k:match("^[A-Z0-9_]+$") then
         T.Frame:RegisterEvent(k)
     end
+end
+
+function T:Log(msg, debug)
+    if debug and not T.DB.Debug then return end
+    DEFAULT_CHAT_FRAME:AddMessage(("|cff00B4FF[BGH]|r%s %s"):format(debug and "|cff00FF00Debug:|r " or "", msg))
 end

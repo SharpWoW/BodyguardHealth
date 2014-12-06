@@ -26,13 +26,31 @@ for i, v in pairs({"bodyguardhealth", "bgh"}) do
     _G["SLASH_" .. NAME:upper() .. i] = "/" .. v
 end
 
+local wasShowing = false
+
 SlashCmdList[NAME:upper()] = function(msg, editBox)
     local cmd = (msg:match("%w+") or ""):lower()
     if cmd:match("^o") or cmd:match("^c") then -- Options
         -- TODO: Open options
     elseif cmd:match("^u") then -- Unlock frame
+        wasShowing = T.BodyguardFrame:IsShowing()
         T.BodyguardFrame:Unlock()
     elseif cmd:match("^l") then -- Lock frame
         T.BodyguardFrame:Lock()
+        if not wasShowing and T.LBG:GetStatus() == T.LBG.Status.Inactive then
+            T.BodyguardFrame:Hide()
+        end
+    elseif cmd:match("^r") then -- Reset frame
+        T.BodyguardFrame:ResetSettings()
+    elseif cmd:match("^d") then -- Debug
+        T.DB.Debug = not T.DB.Debug
+        T:Log(("Debug %s"):format(T.DB.Debug and "enabled" or "disabled"))
+    else
+        T:Log("Available commands:")
+        T:Log("options: Open the options")
+        T:Log("unlock: Unlock the frame to move around")
+        T:Log("lock: Locks the frame again")
+        T:Log("reset: Resets the frame position")
+        T:Log("debug: Toggles debug mode")
     end
 end

@@ -4,6 +4,7 @@
 ## Author: Sharparam
 ## Version: 1.0
 ## SavedVariables: BodyguardHealthDB
+## SavedVariablesPerCharacter: BodyguardHealthCharDB
 
 #@no-lib-strip@
 lib\LibStub\LibStub.lua
