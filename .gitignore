@@ -1,0 +1,2 @@
+# Ignore libs, pulled in via packager
+/lib

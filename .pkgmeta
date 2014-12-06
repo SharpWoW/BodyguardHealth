@@ -1,0 +1,11 @@
+package-as: BodyguardHealth
+
+enable-nolib-creation: yes
+
+externals:
+    lib/LibStub:
+        url: svn://svn.wowace.com/wow/libstub/mainline/trunk
+        tag: latest
+    lib/LibBodyguard-1.0
+        url: git://git.wowace.com/wow/libbodyguard-1-0/mainline.git
+        tag: latest

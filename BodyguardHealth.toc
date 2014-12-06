@@ -1,0 +1,15 @@
+## Interface: 60000
+## Title: Bodyguard Health
+## Notes: Shows the health of the player's current bodyguard.
+## Author: Sharparam
+## Version: 1.0
+## SavedVariables: BodyguardHealthDB
+
+#@no-lib-strip@
+lib\LibStub\LibStub.lua
+lib\LibBodyguard-1.0\load.xml
+#@end-no-lib-strip@
+
+main.lua
+commands.lua
+frame.lua
