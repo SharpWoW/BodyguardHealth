@@ -69,6 +69,8 @@ function T:ADDON_LOADED(name)
 
     lbg:RegisterCallback("health", function(lib, health, maxhealth)
         T.BodyguardFrame:UpdateHealthBar(health, maxhealth)
+        T.CharDB.Health = health
+        T.CharDB.MaxHealth = maxhealth
     end)
 
     lbg:RegisterCallback("name", function(lib, name)
@@ -77,6 +79,7 @@ function T:ADDON_LOADED(name)
 
     if self.CharDB.HasBodyguard then
         self.BodyguardFrame:Show()
+        self.BodyguardFrame:UpdateHealthBar(self.CharDB.Health, self.CharDB.MaxHealth)
     end
 
     -- DEBUG
