@@ -54,19 +54,20 @@ frame:SetMovable(false)
 
 frame:SetBackdrop(backdrop)
 
-frame.nameLabel = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-frame.nameLabel:SetWidth(100)
-frame.nameLabel:SetHeight(16)
-frame.nameLabel:SetPoint("TOPLEFT", frame, "TOPLEFT", 5, -5)
-frame.nameLabel:SetText("Bodyguard")
-frame.nameLabel:SetJustifyH("LEFT")
-
 frame.statusLabel = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
 frame.statusLabel:SetWidth(70)
 frame.statusLabel:SetHeight(16)
 frame.statusLabel:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -5, -5)
 frame.statusLabel:SetText("Unknown")
 frame.statusLabel:SetJustifyH("RIGHT")
+
+frame.nameLabel = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+frame.nameLabel:SetWidth(100)
+frame.nameLabel:SetHeight(16)
+frame.nameLabel:SetPoint("TOPLEFT", frame, "TOPLEFT", 5, -5)
+frame.nameLabel:SetPoint("RIGHT", frame.statusLabel, "LEFT", -5, 0)
+frame.nameLabel:SetText("Bodyguard")
+frame.nameLabel:SetJustifyH("LEFT")
 
 frame.healthBar = CreateFrame("StatusBar", nil, frame)
 local hb = frame.healthBar
