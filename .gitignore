@@ -1,2 +1,5 @@
 # Ignore libs, pulled in via packager
 /lib
+
+# Ignore source WAV files
+audio/*.wav

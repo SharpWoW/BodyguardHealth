@@ -137,6 +137,14 @@ local function round(num)
     return math.floor(num + 0.5)
 end
 
+local health_warnings = {
+    [30] = false,
+    [20] = false,
+    [15] = false,
+    [10] = false,
+    [5] = false
+}
+
 function bf:UpdateHealthBar(health, maxHealth)
     local ratio = (maxHealth > 0) and (health / maxHealth) or 0
 
@@ -154,7 +162,19 @@ function bf:UpdateHealthBar(health, maxHealth)
     hb:SetMinMaxValues(0, maxHealth)
     hb:SetValue(health)
 
-    frame.healthLabel:SetText(("%d%%"):format(round(ratio * 100)))
+    local percentage = round(ratio * 100)
+
+    frame.healthLabel:SetText(("%d%%"):format(percentage))
+
+    if percentage <= 30 then
+        for threshold, warned in pairs(health_warnings) do
+            if percentage >= threshold and not warned then
+                PlaySoundFile("Interface\\AddOns\\BodyguardHealth\\audio\\warn_health.ogg", "Master")
+                RaidNotice_AddMessage(RaidWarningFrame, ("%s @ %d%%!"):format(T.LBG:GetName(), percentage), ChatTypeInfo["RAID_WARNING"])
+                health_warnings[threshold] = true
+            end
+        end
+    end
 end
 
 function bf:Show()
