@@ -22,34 +22,40 @@
 
 local NAME, T = ...
 
+local defaults = {
+    profile = {
+        Debug = false,
+        WarnSound = "BGH: Health Warning",
+        FrameSettings = {
+            Width = 200,
+            Height = 60,
+            Scale = 1,
+            Point = "CENTER",
+            RelPoint = nil,
+            Offset = {
+                X = 0,
+                Y = 0
+            },
+            Texture = "Blizzard"
+        }
+    },
+    char = {
+        HasBodyguard = false
+    }
+}
+
 function T:ADDON_LOADED(name)
     if name ~= NAME then return end
 
+    self.LSM = LibStub("LibSharedMedia-3.0")
     self.LBG = LibStub("LibBodyguard-1.0")
+    self.DB = LibStub("AceDB-3.0"):New("BodyguardHealthDB", defaults, true)
 
-    if not self.LBG then error("Failed to load LibBodyguard") end
+    self.LSM:Register(self.LSM.MediaType.SOUND, "BGH: Health Warning", "Interface\\AddOns\\BodyguardHealth\\audio\\warn_health.ogg")
 
-    if type(BodyguardHealthDB) ~= "table" then
-        BodyguardHealthDB = {}
-    end
-
-    self.DB = BodyguardHealthDB
-
-    if type(self.DB.FrameSettings) ~= "table" then
-        self.BodyguardFrame:ResetSettings()
-    else
-        self.BodyguardFrame:UpdateSettings()
-    end
-
-    if type(BodyguardHealthCharDB) ~= "table" then
-        BodyguardHealthCharDB = {}
-    end
-
-    self.CharDB = BodyguardHealthCharDB
-
-    if type(self.CharDB.HasBodyguard) ~= "boolean" then
-        self.CharDB.HasBodyguard = false
-    end
+    self.DB:RegisterCallback("OnProfileChanged", function()
+        T.BodyguardFrame:UpdateSettings()
+    end)
 
     local lbg = self.LBG
 
@@ -64,26 +70,33 @@ function T:ADDON_LOADED(name)
             T.BodyguardFrame:Hide()
         end
 
-        T.CharDB.HasBodyguard = status ~= lib.Status.Inactive
+        T.DB.char.HasBodyguard = status ~= lib.Status.Inactive
     end)
 
     lbg:RegisterCallback("health", function(lib, health, maxhealth)
         T.BodyguardFrame:UpdateHealthBar(health, maxhealth)
-        T.CharDB.Health = health
-        T.CharDB.MaxHealth = maxhealth
+        T.DB.char.Health = health
+        T.DB.char.MaxHealth = maxhealth
     end)
 
     lbg:RegisterCallback("name", function(lib, name)
         T.BodyguardFrame:UpdateName(name)
     end)
 
-    if self.CharDB.HasBodyguard then
+    if self.DB.char.HasBodyguard then
         self.BodyguardFrame:Show()
-        self.BodyguardFrame:UpdateHealthBar(self.CharDB.Health, self.CharDB.MaxHealth)
+        self.BodyguardFrame:UpdateHealthBar(self.DB.char.Health, self.DB.char.MaxHealth)
     end
+
+    self.Options:Initialize()
 
     -- DEBUG
     _G["BodyguardHealth"] = self
+end
+
+function T:PLAYER_ENTERING_WORLD()
+    if not self.BodyguardFrame:IsShowing() then return end
+    self.BodyguardFrame:UpdateSettings()
 end
 
 T.Frame = CreateFrame("Frame")
@@ -101,6 +114,6 @@ for k, _ in pairs(T) do
 end
 
 function T:Log(msg, debug)
-    if debug and not T.DB.Debug then return end
+    if debug and not T.DB.profile.Debug then return end
     DEFAULT_CHAT_FRAME:AddMessage(("|cff00B4FF[BGH]|r%s %s"):format(debug and "|cff00FF00Debug:|r " or "", msg))
 end

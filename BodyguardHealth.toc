@@ -2,15 +2,13 @@
 ## Title: Bodyguard Health
 ## Notes: Shows the health of the player's current bodyguard.
 ## Author: Sharparam
-## Version: 1.0
+## Version: @project-version@
 ## SavedVariables: BodyguardHealthDB
-## SavedVariablesPerCharacter: BodyguardHealthCharDB
 
 #@no-lib-strip@
-lib\LibStub\LibStub.lua
-lib\LibBodyguard-1.0\load.xml
+embeds.xml
 #@end-no-lib-strip@
 
 main.lua
-commands.lua
 frame.lua
+options.lua

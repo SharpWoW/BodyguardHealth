@@ -42,75 +42,95 @@ local backdrop = {
     }
 }
 
-local frame = CreateFrame("Frame", nil, UIParent)
+local frame
+local created = false
 
--- DEBUG
-bf.Frame = frame
+local function Create()
+    if created then return end
 
-frame:Hide()
+    frame = CreateFrame("Frame", nil, UIParent)
 
-frame:EnableMouse(false)
-frame:SetMovable(false)
+    -- DEBUG
+    bf.Frame = frame
 
-frame:SetBackdrop(backdrop)
+    frame:Hide()
 
-frame.statusLabel = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-frame.statusLabel:SetWidth(70)
-frame.statusLabel:SetHeight(16)
-frame.statusLabel:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -5, -5)
-frame.statusLabel:SetText("Unknown")
-frame.statusLabel:SetJustifyH("RIGHT")
+    frame:EnableMouse(false)
+    frame:SetMovable(false)
 
-frame.nameLabel = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-frame.nameLabel:SetWidth(100)
-frame.nameLabel:SetHeight(16)
-frame.nameLabel:SetPoint("TOPLEFT", frame, "TOPLEFT", 5, -5)
-frame.nameLabel:SetPoint("RIGHT", frame.statusLabel, "LEFT", -5, 0)
-frame.nameLabel:SetText("Bodyguard")
-frame.nameLabel:SetJustifyH("LEFT")
+    frame:SetBackdrop(backdrop)
 
-frame.healthBar = CreateFrame("StatusBar", nil, frame)
-local hb = frame.healthBar
-hb:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar", "ARTWORK")
-hb:SetMinMaxValues(0, 1)
-hb:SetValue(1)
-hb:SetPoint("TOP", frame.nameLabel, "BOTTOM", 0, -5)
-hb:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", 5, 5)
-hb:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -5, 5)
-hb:SetStatusBarColor(0, 1, 0)
+    frame.statusLabel = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    frame.statusLabel:SetWidth(70)
+    frame.statusLabel:SetHeight(16)
+    frame.statusLabel:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -5, -5)
+    frame.statusLabel:SetText("Unknown")
+    frame.statusLabel:SetJustifyH("RIGHT")
 
-frame.healthLabel = hb:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-frame.healthLabel:SetHeight(25)
-frame.healthLabel:SetPoint("TOPLEFT", frame.healthBar, "TOPLEFT")
-frame.healthLabel:SetPoint("BOTTOMRIGHT", frame.healthBar, "BOTTOMRIGHT")
-frame.healthLabel:SetTextColor(1, 1, 1)
-frame.healthLabel:SetFont("Fonts\\FRIZQT__.TTF", 20, "OUTLINE")
+    frame.nameLabel = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    frame.nameLabel:SetWidth(100)
+    frame.nameLabel:SetHeight(16)
+    frame.nameLabel:SetPoint("TOPLEFT", frame, "TOPLEFT", 5, -5)
+    frame.nameLabel:SetPoint("RIGHT", frame.statusLabel, "LEFT", -5, 0)
+    frame.nameLabel:SetText("Bodyguard")
+    frame.nameLabel:SetJustifyH("LEFT")
+
+    frame.healthBar = CreateFrame("StatusBar", nil, frame)
+    local hb = frame.healthBar
+    hb:SetMinMaxValues(0, 1)
+    hb:SetValue(1)
+    hb:SetPoint("TOP", frame.nameLabel, "BOTTOM", 0, -5)
+    hb:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", 5, 5)
+    hb:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -5, 5)
+    hb:SetStatusBarColor(0, 1, 0)
+
+    frame.healthLabel = hb:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    frame.healthLabel:SetHeight(25)
+    frame.healthLabel:SetPoint("TOPLEFT", frame.healthBar, "TOPLEFT")
+    frame.healthLabel:SetPoint("BOTTOMRIGHT", frame.healthBar, "BOTTOMRIGHT")
+    frame.healthLabel:SetTextColor(1, 1, 1)
+    frame.healthLabel:SetFont("Fonts\\FRIZQT__.TTF", 20, "OUTLINE")
+
+    created = true
+
+    bf:UpdateSettings()
+end
 
 function bf:ResetSettings()
+    Create()
     frame:ClearAllPoints()
     frame:SetWidth(200)
     frame:SetHeight(60)
+    frame:SetScale(1)
     frame:SetPoint("CENTER")
     self:SaveSettings()
 end
 
 function bf:UpdateSettings()
-    local settings = T.DB.FrameSettings
+    Create()
+
+    local settings = T.DB.profile.FrameSettings
 
     frame:ClearAllPoints()
-    frame:SetWidth(settings.Width)
-    frame:SetHeight(settings.Height)
+    frame:SetWidth(settings.Width or 200)
+    frame:SetHeight(settings.Height or 60)
     if settings.RelPoint then
-        frame:SetPoint(settings.Point, nil, settings.RelPoint, settings.Offset.X, settings.Offset.Y)
+        frame:SetPoint(settings.Point or "CENTER", nil, settings.RelPoint, settings.Offset.X or 0, settings.Offset.Y or 0)
     else
-        frame:SetPoint(settings.Point, settings.Offset.X, settings.Offset.Y)
+        frame:SetPoint(settings.Point or "CENTER", settings.Offset.X or 0, settings.Offset.Y or 0)
     end
+
+    frame:SetScale(settings.Scale)
+
+    frame.healthBar:SetStatusBarTexture(T.LSM:Fetch(T.LSM.MediaType.STATUSBAR, settings.Texture), "ARTWORK")
 
     self:SaveSettings()
 end
 
 function bf:SaveSettings()
-    local settings = T.DB.FrameSettings
+    Create()
+
+    local settings = T.DB.profile.FrameSettings
 
     settings.Width = frame:GetWidth()
     settings.Height = frame:GetHeight()
@@ -120,13 +140,16 @@ function bf:SaveSettings()
     settings.RelPoint = relPoint
     settings.Offset.X = x
     settings.Offset.Y = y
+    --settings.Texture = hb:GetStatusBarTexture():GetTexture()
 end
 
 function bf:UpdateName(name)
+    Create()
     frame.nameLabel:SetText(name)
 end
 
 function bf:UpdateStatus(status)
+    Create()
     local text = "Unknown"
     for label, id in pairs(T.LBG.Status) do
         if id == status then text = label break end
@@ -143,6 +166,7 @@ local health_warnings = {5, 10, 20, 30}
 local health_warns = {}
 
 function bf:UpdateHealthBar(health, maxHealth)
+    Create()
     local ratio = (maxHealth > 0) and (health / maxHealth) or 0
 
     local red = 1
@@ -153,6 +177,8 @@ function bf:UpdateHealthBar(health, maxHealth)
     elseif ratio < 0.5 then
         green = ratio * 2
     end
+
+    local hb = frame.healthBar
 
     hb:SetStatusBarColor(red, green, 0)
 
@@ -171,7 +197,7 @@ function bf:UpdateHealthBar(health, maxHealth)
             local threshold = health_warnings[i]
             if percentage <= threshold then
                 if not health_warns[i] then
-                    PlaySoundFile("Interface\\AddOns\\BodyguardHealth\\audio\\warn_health.ogg", "Master")
+                    PlaySoundFile(T.LSM.Fetch(T.LSM.MediaType.SOUND, T.DB.WarnSound), "Master")
                     RaidNotice_AddMessage(RaidWarningFrame, ("%s @ %d%%!"):format(T.LBG:GetName(), percentage), ChatTypeInfo["RAID_WARNING"])
                     health_warns[i] = true
                 end
@@ -188,16 +214,18 @@ end
 
 function bf:Show()
     if self:IsShowing() then return end
+    Create()
     frame:Show()
 end
 
 function bf:Hide()
     if not self:IsShowing() then return end
+    Create()
     frame:Hide()
 end
 
 function bf:IsShowing()
-    return frame:IsVisible()
+    return created and frame:IsVisible()
 end
 
 function bf:IsLocked()
@@ -205,6 +233,7 @@ function bf:IsLocked()
 end
 
 function bf:Unlock()
+    Create()
     frame:EnableMouse(true)
     frame:SetMovable(true)
 
@@ -220,6 +249,7 @@ function bf:Unlock()
 end
 
 function bf:Lock()
+    Create()
     frame:EnableMouse(false)
     frame:SetMovable(false)
 
