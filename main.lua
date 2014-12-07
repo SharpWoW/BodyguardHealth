@@ -22,6 +22,16 @@
 
 local NAME, T = ...
 
+local CONTINENT_DRAENOR = 7
+
+-- Draenor zones in which the bodyguard can't be active,
+-- the frame is hidden if player is in one of these zones
+local BODYGUARD_BANNED_ZONES = {
+    [978] = true,  -- Ashran
+    [1009] = true, -- Stormshield
+    [1011] = true  -- Warspear
+}
+
 local defaults = {
     profile = {
         Debug = false,
@@ -95,8 +105,30 @@ function T:ADDON_LOADED(name)
 end
 
 function T:PLAYER_ENTERING_WORLD()
+    local showing = self.BodyguardFrame:IsShowing()
+    SetMapToCurrentZone()
+    local areaId = GetCurrentMapAreaID()
+    if showing and (GetCurrentMapContinent() ~= CONTINENT_DRAENOR or BODYGUARD_BANNED_ZONES[areaId]) then
+        self.BodyguardFrame:Hide()
+    elseif showing then
+        self.BodyguardFrame:UpdateSettings()
+    elseif self.LBG:GetStatus() ~= self.LBG.Status.Inactive then
+        self.BodyguardFrame:Show()
+    end
+end
+
+function T:ZONE_CHANGED_NEW_AREA()
+    T:Log("ZONE_CHANGED_NEW_AREA", true)
     if not self.BodyguardFrame:IsShowing() then return end
-    self.BodyguardFrame:UpdateSettings()
+    SetMapToCurrentZone()
+    local areaId = GetCurrentMapAreaID()
+    T:Log("Current area ID: " .. areaId, true)
+    if BODYGUARD_BANNED_ZONES[areaId] then
+        T:Log("Banned zone, hiding", true)
+        self.BodyguardFrame:Hide()
+    elseif self.LBG:GetStatus() ~= self.LBG.Status.Inactive then
+        self.BodyguardFrame:Show()
+    end
 end
 
 T.Frame = CreateFrame("Frame")
@@ -115,5 +147,5 @@ end
 
 function T:Log(msg, debug)
     if debug and not T.DB.profile.Debug then return end
-    DEFAULT_CHAT_FRAME:AddMessage(("|cff00B4FF[BGH]|r%s %s"):format(debug and "|cff00FF00Debug:|r " or "", msg))
+    DEFAULT_CHAT_FRAME:AddMessage(("|cff00B4FF[BGH]|r%s %s"):format(debug and " |cff00FF00Debug:|r" or "", msg))
 end

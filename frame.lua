@@ -215,6 +215,7 @@ end
 function bf:Show()
     if self:IsShowing() then return end
     Create()
+    self:UpdateSettings()
     frame:Show()
 end
 
