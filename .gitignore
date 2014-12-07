@@ -3,3 +3,6 @@
 
 # Ignore source WAV files
 audio/*.wav
+
+# Ignore the screenshots folder
+screenshots
