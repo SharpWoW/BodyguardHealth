@@ -112,7 +112,7 @@ function T:PLAYER_ENTERING_WORLD()
     end
     SetMapToCurrentZone()
     local areaId = GetCurrentMapAreaID()
-    if showing and (GetCurrentMapContinent() ~= CONTINENT_DRAENOR or BODYGUARD_BANNED_ZONES[areaId]) then
+    if GetCurrentMapContinent() ~= CONTINENT_DRAENOR or BODYGUARD_BANNED_ZONES[areaId] then
         self.BodyguardFrame:Hide()
     elseif showing then
         self.BodyguardFrame:UpdateSettings()
