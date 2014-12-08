@@ -106,6 +106,10 @@ end
 
 function T:PLAYER_ENTERING_WORLD()
     local showing = self.BodyguardFrame:IsShowing()
+    if not self.LBG:Exists() then
+        if showing then self.BodyguardFrame:Hide() end
+        return
+    end
     SetMapToCurrentZone()
     local areaId = GetCurrentMapAreaID()
     if showing and (GetCurrentMapContinent() ~= CONTINENT_DRAENOR or BODYGUARD_BANNED_ZONES[areaId]) then
@@ -126,7 +130,7 @@ function T:ZONE_CHANGED_NEW_AREA()
     if BODYGUARD_BANNED_ZONES[areaId] then
         T:Log("Banned zone, hiding", true)
         self.BodyguardFrame:Hide()
-    elseif self.LBG:GetStatus() ~= self.LBG.Status.Inactive then
+    elseif GetCurrentMapContinent() == CONTINENT_DRAENOR and self.LBG:GetStatus() ~= self.LBG.Status.Inactive then
         self.BodyguardFrame:Show()
     end
 end
