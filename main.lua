@@ -140,7 +140,6 @@ function T:ZONE_CHANGED_NEW_AREA()
     self:Log("ZONE_CHANGED_NEW_AREA", true)
     if not self.BodyguardFrame:IsShowing() then return end
     local validZone = IsValidZone()
-    self:Log("Current area ID: " .. areaId, true)
     if not validZone then
         self:Log("Banned zone, hiding", true)
         self.BodyguardFrame:Hide()
