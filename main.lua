@@ -126,7 +126,7 @@ function T:PLAYER_ENTERING_WORLD()
         if showing then self.BodyguardFrame:Hide() end
         return
     end
-    if not self.DB.char.IsInValidZone and not IsValidZone() then
+    if not self.DB.char.IsInValidZone or not IsValidZone() then
         self:Log("PEW: Not in Draenor, hiding.", true)
         self.BodyguardFrame:Hide()
     elseif showing then
