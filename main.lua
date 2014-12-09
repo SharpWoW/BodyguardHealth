@@ -32,6 +32,15 @@ local BODYGUARD_BANNED_ZONES = {
     [1011] = true  -- Warspear
 }
 
+local function IsValidZone()
+    SetMapToCurrentZone()
+    local cid = GetCurrentMapContinent()
+    local aid = GetCurrentMapAreaID()
+    local valid = cid == CONTINENT_DRAENOR and not BODYGUARD_BANNED_ZONES[aid]
+    T.DB.char.IsInValidZone = valid
+    return valid
+end
+
 local defaults = {
     profile = {
         Debug = false,
@@ -69,6 +78,8 @@ function T:ADDON_LOADED(name)
 
     local lbg = self.LBG
 
+    lbg:UpdateFromBuilding()
+
     lbg:RegisterCallback("status", function(lib, status)
         T.BodyguardFrame:UpdateStatus(status)
 
@@ -93,7 +104,11 @@ function T:ADDON_LOADED(name)
         T.BodyguardFrame:UpdateName(name)
     end)
 
-    if self.DB.char.HasBodyguard then
+    if type(self.DB.char.IsInValidZone) ~= "boolean" then
+        self.DB.char.IsInValidZone = IsValidZone()
+    end
+
+    if self.DB.char.HasBodyguard and self.DB.char.IsInValidZone then
         self.BodyguardFrame:Show()
         self.BodyguardFrame:UpdateHealthBar(self.DB.char.Health, self.DB.char.MaxHealth)
     end
@@ -105,32 +120,31 @@ function T:ADDON_LOADED(name)
 end
 
 function T:PLAYER_ENTERING_WORLD()
+    self:Log("PLAYER_ENTERING_WORLD", true)
     local showing = self.BodyguardFrame:IsShowing()
-    if not self.LBG:Exists() then
+    if not self.LBG:Exists() and not self.DB.char.HasBodyguard then
         if showing then self.BodyguardFrame:Hide() end
         return
     end
-    SetMapToCurrentZone()
-    local areaId = GetCurrentMapAreaID()
-    if GetCurrentMapContinent() ~= CONTINENT_DRAENOR or BODYGUARD_BANNED_ZONES[areaId] then
+    if not self.DB.char.IsInValidZone and not IsValidZone() then
+        self:Log("PEW: Not in Draenor, hiding.", true)
         self.BodyguardFrame:Hide()
     elseif showing then
         self.BodyguardFrame:UpdateSettings()
-    elseif self.LBG:GetStatus() ~= self.LBG.Status.Inactive then
+    elseif self.LBG:GetStatus() ~= self.LBG.Status.Inactive or self.DB.char.HasBodyguard then
         self.BodyguardFrame:Show()
     end
 end
 
 function T:ZONE_CHANGED_NEW_AREA()
-    T:Log("ZONE_CHANGED_NEW_AREA", true)
+    self:Log("ZONE_CHANGED_NEW_AREA", true)
     if not self.BodyguardFrame:IsShowing() then return end
-    SetMapToCurrentZone()
-    local areaId = GetCurrentMapAreaID()
-    T:Log("Current area ID: " .. areaId, true)
-    if BODYGUARD_BANNED_ZONES[areaId] then
-        T:Log("Banned zone, hiding", true)
+    local validZone = IsValidZone()
+    self:Log("Current area ID: " .. areaId, true)
+    if not validZone then
+        self:Log("Banned zone, hiding", true)
         self.BodyguardFrame:Hide()
-    elseif GetCurrentMapContinent() == CONTINENT_DRAENOR and self.LBG:GetStatus() ~= self.LBG.Status.Inactive then
+    elseif self.LBG:GetStatus() ~= self.LBG.Status.Inactive then
         self.BodyguardFrame:Show()
     end
 end
