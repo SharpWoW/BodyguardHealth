@@ -36,6 +36,7 @@ local function IsValidZone()
     SetMapToCurrentZone()
     local cid = GetCurrentMapContinent()
     local aid = GetCurrentMapAreaID()
+    T:Log(("IVZ: cid == %d, aid == %d (%s)"):format(cid, aid, GetMapNameByID(aid)), true)
     local valid = cid == CONTINENT_DRAENOR and not BODYGUARD_BANNED_ZONES[aid]
     T.DB.char.IsInValidZone = valid
     return valid
@@ -126,7 +127,7 @@ function T:PLAYER_ENTERING_WORLD()
         if showing then self.BodyguardFrame:Hide() end
         return
     end
-    if not self.DB.char.IsInValidZone or not IsValidZone() then
+    if not IsValidZone() then
         self:Log("PEW: Not in Draenor, hiding.", true)
         self.BodyguardFrame:Hide()
     elseif showing then
@@ -138,9 +139,9 @@ end
 
 function T:ZONE_CHANGED_NEW_AREA()
     self:Log("ZONE_CHANGED_NEW_AREA", true)
-    if not self.BodyguardFrame:IsShowing() then return end
     local validZone = IsValidZone()
     if not validZone then
+        if not self.BodyguardFrame:IsShowing() then return end
         self:Log("Banned zone, hiding", true)
         self.BodyguardFrame:Hide()
     elseif self.LBG:GetStatus() ~= self.LBG.Status.Inactive then
