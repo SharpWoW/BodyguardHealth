@@ -144,7 +144,7 @@ function T:ZONE_CHANGED_NEW_AREA()
         if not self.BodyguardFrame:IsShowing() then return end
         self:Log("Banned zone, hiding", true)
         self.BodyguardFrame:Hide()
-    elseif self.LBG:GetStatus() ~= self.LBG.Status.Inactive then
+    elseif self.LBG:Exists() and self.LBG:GetStatus() ~= self.LBG.Status.Inactive then
         self.BodyguardFrame:Show()
     end
 end
