@@ -36,7 +36,7 @@ local function IsValidZone()
     SetMapToCurrentZone()
     local cid = GetCurrentMapContinent()
     local aid = GetCurrentMapAreaID()
-    T:Log(("IVZ: cid == %d, aid == %d (%s)"):format(cid, aid, GetMapNameByID(aid)), true)
+    T:Log(("IVZ: cid == %d, aid == %d (%s)"):format(cid, aid, GetMapNameByID(aid) or "Unknown"), true)
     local valid = cid == CONTINENT_DRAENOR and not BODYGUARD_BANNED_ZONES[aid]
     T.DB.char.IsInValidZone = valid
     return valid
