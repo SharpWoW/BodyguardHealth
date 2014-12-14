@@ -78,8 +78,9 @@ local options = {
             name = "Frame settings",
             desc = "Settings for the health frame",
             args = {
+                header1 = { name = "General options", type = "header", order = 1 },
                 point = {
-                    order = 1,
+                    order = 2,
                     name = "Anchor point",
                     desc = "The anchor point for the frame",
                     type = "select",
@@ -94,7 +95,7 @@ local options = {
                     end
                 },
                 relpoint = {
-                    order = 2,
+                    order = 3,
                     name = "Relative point",
                     desc = "The point which the frame will anchor relative to",
                     type = "select",
@@ -112,38 +113,8 @@ local options = {
                         bgframe:UpdateSettings()
                     end
                 },
-                x = {
-                    order = 7,
-                    name = "X offset",
-                    desc = "Amount of UI units to offset the frame horizontally",
-                    type = "range",
-                    min = -1000,
-                    max = 1000,
-                    step = 1,
-                    bigStep = 10,
-                    get = function(info) return T.DB.profile.FrameSettings.Offset.X end,
-                    set = function(info, val)
-                        T.DB.profile.FrameSettings.Offset.X = val
-                        bgframe:UpdateSettings()
-                    end
-                },
-                y = {
-                    order = 8,
-                    name = "Y offset",
-                    desc = "Amount of UI units to offset the frame vertically",
-                    type = "range",
-                    min = -1000,
-                    max = 1000,
-                    step = 1,
-                    bigStep = 10,
-                    get = function(info) return T.DB.profile.FrameSettings.Offset.Y end,
-                    set = function(info, val)
-                        T.DB.profile.FrameSettings.Offset.Y = val
-                        bgframe:UpdateSettings()
-                    end
-                },
                 width = {
-                    order = 4,
+                    order = 5,
                     name = "Width",
                     desc = "Width of the health frame",
                     type = "range",
@@ -158,7 +129,7 @@ local options = {
                     end
                 },
                 height = {
-                    order = 5,
+                    order = 6,
                     name = "Height",
                     desc = "Height of the health frame",
                     type = "range",
@@ -173,7 +144,7 @@ local options = {
                     end
                 },
                 scale = {
-                    order = 6,
+                    order = 7,
                     name = "Scale",
                     desc = "Frame scale",
                     type = "range",
@@ -186,6 +157,93 @@ local options = {
                         T.DB.profile.FrameSettings.Scale = val
                         bgframe:UpdateSettings()
                     end
+                },
+                x = {
+                    order = 8,
+                    name = "X offset",
+                    desc = "Amount of UI units to offset the frame horizontally",
+                    type = "range",
+                    min = -1000,
+                    max = 1000,
+                    step = 1,
+                    bigStep = 10,
+                    get = function(info) return T.DB.profile.FrameSettings.Offset.X end,
+                    set = function(info, val)
+                        T.DB.profile.FrameSettings.Offset.X = val
+                        bgframe:UpdateSettings()
+                    end
+                },
+                y = {
+                    order = 9,
+                    name = "Y offset",
+                    desc = "Amount of UI units to offset the frame vertically",
+                    type = "range",
+                    min = -1000,
+                    max = 1000,
+                    step = 1,
+                    bigStep = 10,
+                    get = function(info) return T.DB.profile.FrameSettings.Offset.Y end,
+                    set = function(info, val)
+                        T.DB.profile.FrameSettings.Offset.Y = val
+                        bgframe:UpdateSettings()
+                    end
+                },
+                header2 = { name = "Background and Border", type = "header", order = 10 },
+                tile = {
+                    order = 13,
+                    name = "Tile background",
+                    desc = "Tile the background texture",
+                    type = "toggle",
+                    get = function(info) return T.DB.profile.FrameSettings.Backdrop.Tile end,
+                    set = function(info, val)
+                        T.DB.profile.FrameSettings.Backdrop.Tile = val
+                        bgframe:UpdateSettings()
+                    end
+                },
+                borderSize = {
+                    order = 14,
+                    name = "Border size",
+                    desc = "The size of the frame border",
+                    type = "range",
+                    min = 0,
+                    max = 128,
+                    step = 1,
+                    get = function(info) return T.DB.profile.FrameSettings.Backdrop.BorderSize end,
+                    set = function(info, val)
+                        T.DB.profile.FrameSetings.Backdrop.BorderSize = val
+                        bgframe:UpdateSettings()
+                    end
+                },
+                tileSize = {
+                    order = 15,
+                    name = "Tile size",
+                    type = "range",
+                    min = 0,
+                    max = 128,
+                    step = 1,
+                    get = function(info) return T.DB.profile.FrameSettings.Backdrop.TileSize end,
+                    set = function(info, val)
+                        T.DB.profile.FrameSettings.Backdrop.TileSize = val
+                        bgframe:UpdateSettings()
+                    end
+                },
+                inset = {
+                    order = 16,
+                    name = "Inset",
+                    type = "range",
+                    min = 0,
+                    max = 128,
+                    step = 0.1,
+                    bigStep = 0.5,
+                    -- We return just left, as currently we sync all of them
+                    get = function(info) return T.DB.profile.FrameSettings.Backdrop.Insets.Left end,
+                    set = function(info, val)
+                        T.DB.profile.FrameSettings.Backdrop.Insets.Left = val
+                        T.DB.profile.FrameSettings.Backdrop.Insets.Right = val
+                        T.DB.profile.FrameSettings.Backdrop.Insets.Top = val
+                        T.DB.profile.FrameSettings.Backdrop.Insets.Bottom = val
+                        bgframe:UpdateSettings()
+                    end
                 }
             }
         }
@@ -195,7 +253,7 @@ local options = {
 T.Options = {}
 
 function T.Options:Initialize()
-    local media = LibStub("LibSharedMedia-3.0", true)
+    local media = T.LSM
     if media then
         options.args.general.args.warnsound = {
             order = 4,
@@ -211,7 +269,7 @@ function T.Options:Initialize()
         }
 
         options.args.frame.args.texture = {
-            order = 3,
+            order = 4,
             name = "Health bar texture",
             desc = "Select the texture to use for the health bar",
             type = "select",
@@ -222,6 +280,38 @@ function T.Options:Initialize()
             get = function(info) return T.DB.profile.FrameSettings.Texture end,
             set = function(info, val)
                 T.DB.profile.FrameSettings.Texture = val
+                bgframe:UpdateSettings()
+            end
+        }
+
+        options.args.frame.args.background = {
+            order = 11,
+            name = "Frame background",
+            desc = "Select the texture to use for the frame background",
+            type = "select",
+            values = function(info)
+                return media:HashTable(media.MediaType.BACKGROUND)
+            end,
+            dialogControl = "LSM30_Background",
+            get = function(info) return T.DB.profile.FrameSettings.Backdrop.Background end,
+            set = function(info, val)
+                T.DB.profile.FrameSettings.Backdrop.Background = val
+                bgframe:UpdateSettings()
+            end
+        }
+
+        options.args.frame.args.border = {
+            order = 12,
+            name = "Frame border",
+            desc = "Select the border texture to use for the frame",
+            type = "select",
+            values = function(info)
+                return media:HashTable(media.MediaType.BORDER)
+            end,
+            dialogControl = "LSM30_Border",
+            get = function(info) return T.DB.profile.FrameSettings.Backdrop.Border end,
+            set = function(info, val)
+                T.DB.profile.FrameSettings.Backdrop.Border = val
                 bgframe:UpdateSettings()
             end
         }

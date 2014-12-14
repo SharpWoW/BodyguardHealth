@@ -28,20 +28,6 @@ local bf = T.BodyguardFrame
 
 local locked = true
 
-local backdrop = {
-    bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
-    edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
-    tile = true,
-    edgeSize = 16,
-    tileSize = 32,
-    insets = {
-        left = 2.5,
-        right = 2.5,
-        top = 2.5,
-        bottom = 2.5
-    }
-}
-
 local frame
 local created = false
 
@@ -57,8 +43,6 @@ local function Create()
 
     frame:EnableMouse(false)
     frame:SetMovable(false)
-
-    frame:SetBackdrop(backdrop)
 
     frame.statusLabel = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
     frame.statusLabel:SetWidth(70)
@@ -122,7 +106,25 @@ function bf:UpdateSettings()
 
     frame:SetScale(settings.Scale)
 
-    frame.healthBar:SetStatusBarTexture(T.LSM:Fetch(T.LSM.MediaType.STATUSBAR, settings.Texture), "ARTWORK")
+    local lsm = T.LSM
+
+    local backdrop = {
+        bgFile = lsm:Fetch(lsm.MediaType.BACKGROUND, settings.Backdrop.Background),
+        edgeFile = lsm:Fetch(lsm.MediaType.BORDER, settings.Backdrop.Border),
+        tile = settings.Backdrop.Tile,
+        edgeSize = settings.Backdrop.BorderSize,
+        tileSize = settings.Backdrop.TileSize,
+        insets = {
+            left = settings.Backdrop.Insets.Left,
+            right = settings.Backdrop.Insets.Right,
+            top = settings.Backdrop.Insets.Top,
+            bottom = settings.Backdrop.Insets.Bottom
+        }
+    }
+
+    frame:SetBackdrop(backdrop)
+
+    frame.healthBar:SetStatusBarTexture(lsm:Fetch(lsm.MediaType.STATUSBAR, settings.Texture), "ARTWORK")
 
     self:SaveSettings()
 end

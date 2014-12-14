@@ -56,7 +56,20 @@ local defaults = {
                 X = 0,
                 Y = 0
             },
-            Texture = "Blizzard"
+            Texture = "Blizzard",
+            Backdrop = {
+                Background = "Blizzard Dialog Background",
+                Border = "Blizzard Tooltip",
+                Tile = true,
+                BorderSize = 16,
+                TileSize = 32,
+                Insets = {
+                    Left = 2.5,
+                    Right = 2.5,
+                    Top = 2.5,
+                    Bottom = 2.5
+                }
+            }
         }
     },
     char = {
