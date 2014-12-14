@@ -210,7 +210,7 @@ local options = {
                     step = 1,
                     get = function(info) return T.DB.profile.FrameSettings.Backdrop.BorderSize end,
                     set = function(info, val)
-                        T.DB.profile.FrameSetings.Backdrop.BorderSize = val
+                        T.DB.profile.FrameSettings.Backdrop.BorderSize = val
                         bgframe:UpdateSettings()
                     end
                 },
@@ -231,8 +231,8 @@ local options = {
                     order = 16,
                     name = "Inset",
                     type = "range",
-                    min = 0,
-                    max = 128,
+                    min = -64,
+                    max = 64,
                     step = 0.1,
                     bigStep = 0.5,
                     -- We return just left, as currently we sync all of them
