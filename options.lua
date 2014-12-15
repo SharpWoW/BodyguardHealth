@@ -326,6 +326,24 @@ local options = {
                         T.DB.profile.FrameSettings.FontSize = val
                         bgframe:UpdateSettings()
                     end
+                },
+                bartextcolor = {
+                    order = 23,
+                    name = "Bar text color",
+                    type = "color",
+                    hasAlpha = true,
+                    get = function(info)
+                        local color = T.DB.profile.FrameSettings.FontColor
+                        return color.R, color.G, color.B, color.A
+                    end,
+                    set = function(info, r, g, b, a)
+                        local color = T.DB.profile.FrameSettings.FontColor
+                        color.R = r
+                        color.G = g
+                        color.B = b
+                        color.A = a
+                        bgframe:UpdateSettings()
+                    end
                 }
             }
         }

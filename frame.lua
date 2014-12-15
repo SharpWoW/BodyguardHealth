@@ -130,6 +130,7 @@ function bf:UpdateSettings()
     frame.healthBar:SetStatusBarTexture(lsm:Fetch(lsm.MediaType.STATUSBAR, settings.Texture), "ARTWORK")
 
     frame.healthLabel:SetFont(lsm:Fetch(lsm.MediaType.FONT, settings.Font), settings.FontSize, settings.FontFlags)
+    frame.healthLabel:SetTextColor(settings.FontColor.R, settings.FontColor.G, settings.FontColor.B, settings.FontColor.A)
 
     self:SaveSettings()
 end
