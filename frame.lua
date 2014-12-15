@@ -123,6 +123,10 @@ function bf:UpdateSettings()
     }
 
     frame:SetBackdrop(backdrop)
+    local bdcolor = settings.Backdrop.Color
+    frame:SetBackdropColor(bdcolor.R, bdcolor.G, bdcolor.B, bdcolor.A)
+    local bdbcolor = settings.Backdrop.BorderColor
+    frame:SetBackdropBorderColor(bdbcolor.R, bdbcolor.G, bdbcolor.B, bdbcolor.A)
 
     frame.healthBar:SetStatusBarTexture(lsm:Fetch(lsm.MediaType.STATUSBAR, settings.Texture), "ARTWORK")
 

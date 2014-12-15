@@ -60,6 +60,18 @@ local defaults = {
             Backdrop = {
                 Background = "Blizzard Dialog Background",
                 Border = "Blizzard Tooltip",
+                Color = {
+                    R = 1,
+                    G = 1,
+                    B = 1,
+                    A = 1
+                },
+                BorderColor = {
+                    R = 1,
+                    G = 1,
+                    B = 1,
+                    A = 1
+                },
                 Tile = true,
                 BorderSize = 16,
                 TileSize = 32,

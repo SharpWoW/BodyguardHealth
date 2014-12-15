@@ -200,8 +200,46 @@ local options = {
                         bgframe:UpdateSettings()
                     end
                 },
-                borderSize = {
+                color = {
                     order = 14,
+                    name = "Background color",
+                    desc = "The color of the frame background",
+                    type = "color",
+                    hasAlpha = true,
+                    get = function(info)
+                        local color = T.DB.profile.FrameSettings.Backdrop.Color
+                        return color.R, color.G, color.B, color.A
+                    end,
+                    set = function(info, r, g, b, a)
+                        local color = T.DB.profile.FrameSettings.Backdrop.Color
+                        color.R = r
+                        color.G = g
+                        color.B = b
+                        color.A = a
+                        bgframe:UpdateSettings()
+                    end
+                },
+                borderColor = {
+                    order = 15,
+                    name = "Border color",
+                    desc = "The color of the frame border",
+                    type = "color",
+                    hasAlpha = true,
+                    get = function(info)
+                        local color = T.DB.profile.FrameSettings.Backdrop.BorderColor
+                        return color.R, color.G, color.B, color.A
+                    end,
+                    set = function(info, r, g, b, a)
+                        local color = T.DB.profile.FrameSettings.Backdrop.BorderColor
+                        color.R = r
+                        color.G = g
+                        color.B = b
+                        color.A = a
+                        bgframe:UpdateSettings()
+                    end
+                },
+                borderSize = {
+                    order = 16,
                     name = "Border size",
                     desc = "The size of the frame border",
                     type = "range",
@@ -215,7 +253,7 @@ local options = {
                     end
                 },
                 tileSize = {
-                    order = 15,
+                    order = 17,
                     name = "Tile size",
                     type = "range",
                     min = 0,
@@ -228,7 +266,7 @@ local options = {
                     end
                 },
                 inset = {
-                    order = 16,
+                    order = 18,
                     name = "Inset",
                     type = "range",
                     min = -64,
