@@ -204,8 +204,10 @@ function bf:UpdateHealthBar(health, maxHealth)
             local threshold = health_warnings[i]
             if percentage <= threshold then
                 if not health_warns[i] then
-                    PlaySoundFile(T.LSM.Fetch(T.LSM.MediaType.SOUND, T.DB.WarnSound), "Master")
-                    RaidNotice_AddMessage(RaidWarningFrame, ("%s @ %d%%!"):format(T.LBG:GetName(), percentage), ChatTypeInfo["RAID_WARNING"])
+                    if T.DB.profile.EnableWarn then
+                        PlaySoundFile(T.LSM.Fetch(T.LSM.MediaType.SOUND, T.DB.WarnSound), "Master")
+                        RaidNotice_AddMessage(RaidWarningFrame, ("%s @ %d%%!"):format(T.LBG:GetName(), percentage), ChatTypeInfo["RAID_WARNING"])
+                    end
                     health_warns[i] = true
                 end
                 break

@@ -69,6 +69,14 @@ local options = {
                     desc = "Resets frame position and size",
                     type = "execute",
                     func = function() bgframe:ResetSettings() end
+                },
+                enablewarn = {
+                    order = 4,
+                    name = "Enable health warnings",
+                    desc = "Enables the playing of sound and display of a raid warning when bodyguard is low on health",
+                    type = "toggle",
+                    get = function(info) return T.DB.profile.EnableWarn end,
+                    set = function(info, val) T.DB.profile.EnableWarn = val end
                 }
             }
         },
@@ -330,7 +338,7 @@ function T.Options:Initialize()
     local media = T.LSM
     if media then
         options.args.general.args.warnsound = {
-            order = 4,
+            order = 5,
             name = "Health warning sound",
             desc = "Sound to play when bodyguard health is dangerously low",
             type = "select",

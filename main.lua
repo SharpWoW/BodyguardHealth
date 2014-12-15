@@ -45,6 +45,7 @@ end
 local defaults = {
     profile = {
         Debug = false,
+        EnableWarn = true,
         WarnSound = "BGH: Health Warning",
         FrameSettings = {
             Width = 200,
