@@ -56,6 +56,9 @@ local defaults = {
                 X = 0,
                 Y = 0
             },
+            Font = "Friz Quadrata TT",
+            FontSize = 20,
+            FontFlags = "OUTLINE",
             Texture = "Blizzard",
             Backdrop = {
                 Background = "Blizzard Dialog Background",

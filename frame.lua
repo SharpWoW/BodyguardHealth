@@ -73,8 +73,7 @@ local function Create()
     frame.healthLabel:SetPoint("TOPLEFT", frame.healthBar, "TOPLEFT")
     frame.healthLabel:SetPoint("BOTTOMRIGHT", frame.healthBar, "BOTTOMRIGHT")
     frame.healthLabel:SetTextColor(1, 1, 1)
-    frame.healthLabel:SetFont("Fonts\\FRIZQT__.TTF", 20, "OUTLINE")
-
+    
     created = true
 
     bf:UpdateSettings()
@@ -129,6 +128,8 @@ function bf:UpdateSettings()
     frame:SetBackdropBorderColor(bdbcolor.R, bdbcolor.G, bdbcolor.B, bdbcolor.A)
 
     frame.healthBar:SetStatusBarTexture(lsm:Fetch(lsm.MediaType.STATUSBAR, settings.Texture), "ARTWORK")
+
+    frame.healthLabel:SetFont(lsm:Fetch(lsm.MediaType.FONT, settings.Font), settings.FontSize, settings.FontFlags)
 
     self:SaveSettings()
 end

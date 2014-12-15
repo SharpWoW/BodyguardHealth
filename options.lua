@@ -282,6 +282,42 @@ local options = {
                         T.DB.profile.FrameSettings.Backdrop.Insets.Bottom = val
                         bgframe:UpdateSettings()
                     end
+                },
+                header3 = { order = 19, name = "Healthbar", type = "header" },
+                bartextflags = {
+                    order = 21,
+                    name = "Bar text outline",
+                    type = "select",
+                    style = "dropdown",
+                    values = {
+                        NONE = "None",
+                        OUTLINE = "Outline",
+                        THICKOUTLINE = "Thick outline",
+                        ["OUTLINE, MONOCHROME"] = "Monochrome outline",
+                        ["THICKOUTLINE, MONOCHROME"] = "Monochrome thick outline"
+                    },
+                    get = function(info) return T.DB.profile.FrameSettings.FontFlags or "NONE" end,
+                    set = function(info, val)
+                        if val == "NONE" then
+                            T.DB.profile.FrameSettings.FontFlags = nil
+                        else
+                            T.DB.profile.FrameSettings.FontFlags = val
+                        end
+                        bgframe:UpdateSettings()
+                    end
+                },
+                bartextsize = {
+                    order = 22,
+                    name = "Bar text size",
+                    type = "range",
+                    min = 1,
+                    max = 128,
+                    step = 1,
+                    get = function(info) return T.DB.profile.FrameSettings.FontSize end,
+                    set = function(info, val)
+                        T.DB.profile.FrameSettings.FontSize = val
+                        bgframe:UpdateSettings()
+                    end
                 }
             }
         }
@@ -350,6 +386,22 @@ function T.Options:Initialize()
             get = function(info) return T.DB.profile.FrameSettings.Backdrop.Border end,
             set = function(info, val)
                 T.DB.profile.FrameSettings.Backdrop.Border = val
+                bgframe:UpdateSettings()
+            end
+        }
+
+        options.args.frame.args.barfont = {
+            order = 20,
+            name = "Bar font",
+            desc = "Set the font to use for displaying the health percentage",
+            type = "select",
+            values = function(info)
+                return media:HashTable(media.MediaType.FONT)
+            end,
+            dialogControl = "LSM30_Font",
+            get = function(info) return T.DB.profile.FrameSettings.Font end,
+            set = function(info, val)
+                T.DB.profile.FrameSettings.Font = val
                 bgframe:UpdateSettings()
             end
         }
