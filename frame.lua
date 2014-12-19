@@ -173,6 +173,8 @@ local at_warn_threshold = false
 local health_warnings = {5, 10, 20, 30}
 local health_warns = {}
 
+local shown_by_unlock = false
+
 function bf:UpdateHealthBar(health, maxHealth)
     Create()
     local ratio = (maxHealth > 0) and (health / maxHealth) or 0
@@ -222,8 +224,9 @@ function bf:UpdateHealthBar(health, maxHealth)
     end
 end
 
-function bf:Show()
-    if self:IsShowing() then return end
+function bf:Show(force)
+    if not force and (self:IsShowing() or not T.DB.profile.Enabled) then return end
+    if not force then shown_by_unlock = false end
     Create()
     self:UpdateSettings()
     frame:Show()
@@ -233,6 +236,7 @@ function bf:Hide()
     if not self:IsShowing() then return end
     Create()
     frame:Hide()
+    shown_by_unlock = false
 end
 
 function bf:IsShowing()
@@ -254,7 +258,10 @@ function bf:Unlock()
         bf:SaveSettings()
     end)
 
-    if not self:IsShowing() then self:Show() end
+    if not self:IsShowing() then
+        self:Show(true)
+        shown_by_unlock = true
+    end
 
     locked = false
 end
@@ -270,4 +277,10 @@ function bf:Lock()
     self:SaveSettings()
 
     locked = true
+
+    if not T.DB.profile.Enabled or not T.DB.char.HasBodyguard or shown_by_unlock then
+        self:Hide()
+    end
+
+    shown_by_unlock = false
 end

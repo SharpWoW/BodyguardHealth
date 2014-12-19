@@ -47,8 +47,22 @@ local options = {
             name = "General options",
             type = "group",
             args = {
-                debug = {
+                enabled = {
                     order = 1,
+                    name = "Enabled",
+                    desc = "When AddOn is disabled, the frame will be hidden from view",
+                    type = "toggle",
+                    get = function(info) return T.DB.profile.Enabled end,
+                    set = function(info, val)
+                        if val then
+                            T:Enable()
+                        else
+                            T:Disable()
+                        end
+                    end
+                },
+                debug = {
+                    order = 2,
                     name = "Debug mode",
                     desc = "With debug mode enabled, more diagnostic messages will be printed to chat",
                     type = "toggle",
@@ -56,7 +70,7 @@ local options = {
                     set = function(info, val) T.DB.profile.Debug = val end
                 },
                 lock = {
-                    order = 2,
+                    order = 3,
                     name = "Lock frame",
                     desc = "Locks frame to prevent movement and enable click-through",
                     type = "toggle",
@@ -64,19 +78,33 @@ local options = {
                     set = function(info, val) if val then bgframe:Lock() else bgframe:Unlock() end end
                 },
                 reset = {
-                    order = 3,
+                    order = 4,
                     name = "Reset frame",
                     desc = "Resets frame position and size",
                     type = "execute",
                     func = function() bgframe:ResetSettings() end
                 },
                 enablewarn = {
-                    order = 4,
+                    order = 5,
                     name = "Enable health warnings",
                     desc = "Enables the playing of sound and display of a raid warning when bodyguard is low on health",
                     type = "toggle",
                     get = function(info) return T.DB.profile.EnableWarn end,
                     set = function(info, val) T.DB.profile.EnableWarn = val end
+                },
+                show = {
+                    order = 6,
+                    name = "Show frame",
+                    desc = "Forces the frame to show",
+                    type = "execute",
+                    func = function() bgframe:Show(true) end
+                },
+                hide = {
+                    order = 7,
+                    name = "Hide frame",
+                    desc = "Forces the frame to hide",
+                    type = "execute",
+                    func = function() bgframe:Hide() end
                 }
             }
         },

@@ -44,6 +44,7 @@ end
 
 local defaults = {
     profile = {
+        Enabled = true,
         Debug = false,
         EnableWarn = true,
         WarnSound = "BGH: Health Warning",
@@ -182,6 +183,16 @@ function T:ZONE_CHANGED_NEW_AREA()
     elseif self.LBG:Exists() and self.LBG:GetStatus() ~= self.LBG.Status.Inactive then
         self.BodyguardFrame:Show()
     end
+end
+
+function T:Enable()
+    self.DB.profile.Enabled = true
+
+end
+
+function T:Disable()
+    self.DB.profile.Enabled = false
+    self.BodyguardFrame:Hide()
 end
 
 T.Frame = CreateFrame("Frame")
