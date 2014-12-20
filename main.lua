@@ -48,6 +48,8 @@ local defaults = {
         Debug = false,
         EnableWarn = true,
         WarnSound = "BGH: Health Warning",
+        CloseGossip = false,
+        CloseGossipModifier = "control",
         FrameSettings = {
             Width = 200,
             Height = 60,
@@ -100,6 +102,12 @@ local defaults = {
     }
 }
 
+local modifier_funcs = {
+    control = IsControlKeyDown,
+    shift = IsShiftKeyDown,
+    alt = IsAltKeyDown
+}
+
 function T:ADDON_LOADED(name)
     if name ~= NAME then return end
 
@@ -139,6 +147,13 @@ function T:ADDON_LOADED(name)
 
     lbg:RegisterCallback("name", function(lib, name)
         T.BodyguardFrame:UpdateName(name)
+    end)
+
+    lbg:RegisterCallback("gossip_opened", function(lib)
+        if not T.DB.profile.CloseGossip then return end
+        local func = modifier_funcs[T.DB.profile.CloseGossipModifier]
+        if func and func() then return end
+        CloseGossip()
     end)
 
     if type(self.DB.char.IsInValidZone) ~= "boolean" then

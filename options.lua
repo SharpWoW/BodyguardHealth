@@ -105,6 +105,27 @@ local options = {
                     desc = "Forces the frame to hide",
                     type = "execute",
                     func = function() bgframe:Hide() end
+                },
+                gossipclose = {
+                    order = 8,
+                    name = "Auto-close gossip",
+                    desc = "With this enabled, the bodyguard gossip window will automatically close when opened unless the configured modifier key is held",
+                    type = "toggle",
+                    get = function(info) return T.DB.profile.CloseGossip end,
+                    set = function(info, val) T.DB.profile.CloseGossip = val end
+                },
+                gossipclosemodifier = {
+                    order = 9,
+                    name = "Gossip close override modifier",
+                    desc = "When auto-close gossip is enabled, holding this modifier key down will prevent it from closing automatically",
+                    type = "select",
+                    values = {
+                        control = "Control",
+                        shift = "Shift",
+                        alt = "Alt"
+                    },
+                    get = function(info) return T.DB.profile.CloseGossipModifier end,
+                    set = function(info, val) T.DB.profile.CloseGossipModifier = val end
                 }
             }
         },
