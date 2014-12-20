@@ -150,7 +150,7 @@ function T:ADDON_LOADED(name)
     end)
 
     lbg:RegisterCallback("gossip_opened", function(lib)
-        if not T.DB.profile.CloseGossip then return end
+        if not T.DB.profile.Enabled or not T.DB.profile.CloseGossip then return end
         local func = modifier_funcs[T.DB.profile.CloseGossipModifier]
         if func and func() then return end
         CloseGossip()
