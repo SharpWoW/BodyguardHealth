@@ -34,14 +34,15 @@ local created = false
 local function Create()
     if created then return end
 
-    frame = CreateFrame("Frame", nil, UIParent)
+    -- A global name required for dropdown functionality
+    frame = CreateFrame("Frame", "BodyguardHealthFrame", UIParent)
 
     -- DEBUG
     bf.Frame = frame
 
     frame:Hide()
 
-    frame:EnableMouse(false)
+    --frame:EnableMouse(false)
     frame:SetMovable(false)
 
     frame.statusLabel = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
@@ -73,7 +74,7 @@ local function Create()
     frame.healthLabel:SetPoint("TOPLEFT", frame.healthBar, "TOPLEFT")
     frame.healthLabel:SetPoint("BOTTOMRIGHT", frame.healthBar, "BOTTOMRIGHT")
     frame.healthLabel:SetTextColor(1, 1, 1)
-    
+
     created = true
 
     bf:UpdateSettings()
@@ -224,6 +225,27 @@ function bf:UpdateHealthBar(health, maxHealth)
     end
 end
 
+function bf:SetMenu(enabled)
+    if enabled then
+        frame:SetScript("OnMouseUp", function(self, button)
+            if button ~= "RightButton" then return end
+            T.Dropdown:Show(frame)
+        end)
+    else
+        frame:SetScript("OnMouseUp", nil)
+        frame:EnableMouse(false)
+    end
+    T.DB.profile.FrameSettings.MenuEnabled = enabled
+end
+
+function bf:EnableMenu()
+    self:SetMenu(true)
+end
+
+function bf:DisableMenu()
+    self:SetMenu(false)
+end
+
 function bf:Show(force)
     if not force and (self:IsShowing() or not T.DB.profile.Enabled) then return end
     if not force then shown_by_unlock = false end
@@ -249,7 +271,6 @@ end
 
 function bf:Unlock()
     Create()
-    frame:EnableMouse(true)
     frame:SetMovable(true)
 
     frame:SetScript("OnMouseDown", function(f) f:StartMoving() end)
@@ -268,7 +289,6 @@ end
 
 function bf:Lock()
     Create()
-    frame:EnableMouse(false)
     frame:SetMovable(false)
 
     frame:SetScript("OnMouseDown", nil)
@@ -277,6 +297,12 @@ function bf:Lock()
     self:SaveSettings()
 
     locked = true
+
+    if T.DB.profile.FrameSettings.MenuEnabled then
+        self:EnableMenu()
+    else
+        frame:EnableMouse(false)
+    end
 
     if not T.DB.profile.Enabled or not T.DB.char.HasBodyguard or shown_by_unlock then
         self:Hide()

@@ -37,9 +37,7 @@ local options = {
             type = "execute",
             guiHidden = true,
             func = function()
-                if not interfacePanel then return end
-                InterfaceOptionsFrame_OpenToCategory(framePanel)
-                InterfaceOptionsFrame_OpenToCategory(interfacePanel) 
+                T.Options:Open()
             end
         },
         general = {
@@ -393,6 +391,18 @@ local options = {
                         color.A = a
                         bgframe:UpdateSettings()
                     end
+                },
+                header4 = { order = 24, name = "Other options", type = "header" },
+                menuenabled = {
+                    order = 25,
+                    name = "Menu enabled",
+                    desc = "Enables a right click menu on the health frame with some convenient options, frame is click-through when menu is disabled.",
+                    type = "toggle",
+                    get = function(info) return T.DB.profile.FrameSettings.MenuEnabled end,
+                    set = function(info, val)
+                        T.DB.profile.FrameSettings.MenuEnabled = val
+                        bgframe:SetMenu(val)
+                    end
                 }
             }
         }
@@ -487,4 +497,10 @@ function T.Options:Initialize()
     interfacePanel = acd:AddToBlizOptions(NAME, "Bodyguard Health", nil, "general")
     framePanel = acd:AddToBlizOptions(NAME, "Frame settings", "Bodyguard Health", "frame")
     acd:AddToBlizOptions(NAME, "Profile", "Bodyguard Health", "profile")
+end
+
+function T.Options:Open()
+    if not interfacePanel then return end
+    InterfaceOptionsFrame_OpenToCategory(framePanel)
+    InterfaceOptionsFrame_OpenToCategory(interfacePanel) 
 end

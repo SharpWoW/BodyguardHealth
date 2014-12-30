@@ -20,4 +20,5 @@ lib\LibBodyguard-1.0\load.xml
 
 main.lua
 frame.lua
+dropdown.lua
 options.lua

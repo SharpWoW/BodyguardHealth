@@ -51,6 +51,7 @@ local defaults = {
         CloseGossip = false,
         CloseGossipModifier = "control",
         FrameSettings = {
+            MenuEnabled = true,
             Width = 200,
             Height = 60,
             Scale = 1,
@@ -164,6 +165,9 @@ function T:ADDON_LOADED(name)
         self.BodyguardFrame:Show()
         self.BodyguardFrame:UpdateHealthBar(self.DB.char.Health, self.DB.char.MaxHealth)
     end
+
+    self.Dropdown:Create()
+    self.BodyguardFrame:SetMenu(self.DB.profile.FrameSettings.MenuEnabled)
 
     self.Options:Initialize()
 
