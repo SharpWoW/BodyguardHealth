@@ -140,7 +140,16 @@ function T:ADDON_LOADED(name)
         T.DB.char.HasBodyguard = status ~= lib.Status.Inactive
     end)
 
+    local login_health_flag = true
+
     lbg:RegisterCallback("health", function(lib, health, maxhealth)
+        -- Don't update health values if addon has restored them from savedvars
+        -- This essentially ignores the initial health update from LibBodyguard as it's inaccurate
+        -- if the player logged out with an active bodyguard
+        if maxHealth == 0 and (T.DB.char.HasBodyguard and T.DB.char.MaxHealth ~= 0) and login_health_flag then
+            login_health_flag = false
+            return
+        end
         T.BodyguardFrame:UpdateHealthBar(health, maxhealth)
         T.DB.char.Health = health
         T.DB.char.MaxHealth = maxhealth
