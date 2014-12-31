@@ -226,6 +226,7 @@ function bf:UpdateHealthBar(health, maxHealth)
 end
 
 function bf:SetMenu(enabled)
+    Create()
     if enabled then
         frame:SetScript("OnMouseUp", function(self, button)
             if button ~= "RightButton" then return end
