@@ -71,6 +71,12 @@ local defaults = {
                 A = 1
             },
             Texture = "Blizzard",
+            HealthBasedColor = true,
+            CustomColor = {
+                R = 1,
+                G = 1,
+                B = 1
+            },
             Backdrop = {
                 Background = "Blizzard Dialog Background",
                 Border = "Blizzard Tooltip",

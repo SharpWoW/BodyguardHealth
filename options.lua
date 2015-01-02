@@ -392,9 +392,38 @@ local options = {
                         bgframe:UpdateSettings()
                     end
                 },
-                header4 = { order = 24, name = "Other options", type = "header" },
-                menuenabled = {
+                barhealthcolored = {
+                    order = 24,
+                    name = "Color based on health",
+                    desc = "Colors the health bar based on bodyguard health (red at 0%, green at 100%).",
+                    type = "toggle",
+                    get = function(info) return T.DB.profile.FrameSettings.HealthBasedColor end,
+                    set = function(info, val)
+                        T.DB.profile.FrameSettings.HealthBasedColor = val
+                        bgframe:UpdateHealthBar()
+                    end
+                },
+                barcustomcolor = {
                     order = 25,
+                    name = "Custom health bar color",
+                    desc = "Configures a static color to use for the health bar, only used if health based coloring is disabled.",
+                    type = "color",
+                    hasAlpha = false,
+                    get = function(info)
+                        local color = T.DB.profile.FrameSettings.CustomColor
+                        return color.R, color.G, color.B
+                    end,
+                    set = function(info, r, g, b)
+                        local color = T.DB.profile.FrameSettings.CustomColor
+                        color.R = r
+                        color.G = g
+                        color.B = b
+                        bgframe:UpdateHealthBar()
+                    end
+                },
+                header4 = { order = 26, name = "Other options", type = "header" },
+                menuenabled = {
+                    order = 27,
                     name = "Menu enabled",
                     desc = "Enables a right click menu on the health frame with some convenient options, frame is click-through when menu is disabled.",
                     type = "toggle",

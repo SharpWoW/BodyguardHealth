@@ -177,21 +177,32 @@ local health_warns = {}
 local shown_by_unlock = false
 
 function bf:UpdateHealthBar(health, maxHealth)
+    health = health or T.DB.char.Health or T.LBG:GetHealth()
+    maxHealth = maxHealth or T.DB.char.MaxHealth or T.LBG:GetMaxHealth()
+
     Create()
-    local ratio = (maxHealth > 0) and (health / maxHealth) or 0
 
     local red = 1
     local green = 1
+    local blue = 0
 
-    if ratio > 0.5 then
-        red = 2 - ratio * 2
-    elseif ratio < 0.5 then
-        green = ratio * 2
+    if T.DB.profile.FrameSettings.HealthBasedColor then
+        local ratio = (maxHealth > 0) and (health / maxHealth) or 0
+
+        if ratio > 0.5 then
+            red = 2 - ratio * 2
+        elseif ratio < 0.5 then
+            green = ratio * 2
+        end
+    else
+        red = T.DB.profile.FrameSettings.CustomColor.R
+        green = T.DB.profile.FrameSettings.CustomColor.G
+        blue = T.DB.profile.FrameSettings.CustomColor.B
     end
 
     local hb = frame.healthBar
 
-    hb:SetStatusBarColor(red, green, 0)
+    hb:SetStatusBarColor(red, green, blue)
 
     hb:SetMinMaxValues(0, maxHealth)
     hb:SetValue(health)
