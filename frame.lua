@@ -186,9 +186,9 @@ function bf:UpdateHealthBar(health, maxHealth)
     local green = 1
     local blue = 0
 
-    if T.DB.profile.FrameSettings.HealthBasedColor then
-        local ratio = (maxHealth > 0) and (health / maxHealth) or 0
+    local ratio = (maxHealth > 0) and (health / maxHealth) or 0
 
+    if T.DB.profile.FrameSettings.HealthBasedColor then
         if ratio > 0.5 then
             red = 2 - ratio * 2
         elseif ratio < 0.5 then
