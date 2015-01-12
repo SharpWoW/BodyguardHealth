@@ -124,9 +124,11 @@ function T:ADDON_LOADED(name)
 
     self.LSM:Register(self.LSM.MediaType.SOUND, "BGH: Health Warning", "Interface\\AddOns\\BodyguardHealth\\audio\\warn_health.ogg")
 
-    self.DB:RegisterCallback("OnProfileChanged", function()
-        T.BodyguardFrame:UpdateSettings()
-    end)
+    local function refresh() T.BodyguardFrame:UpdateSettings() end
+
+    self.DB:RegisterCallback("OnProfileChanged", refresh)
+    self.DB:RegisterCallback("OnProfileCopied", refresh)
+    self.DB:RegisterCallback("OnProfileReset", refresh)
 
     local lbg = self.LBG
 
