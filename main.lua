@@ -202,7 +202,7 @@ function T:PLAYER_ENTERING_WORLD()
         self.BodyguardFrame:Hide()
     elseif showing then
         self.BodyguardFrame:UpdateSettings()
-    elseif self.LBG:GetStatus() ~= self.LBG.Status.Inactive or self.DB.char.HasBodyguard then
+    elseif self.LBG:GetStatus() ~= self.LBG.Status.Inactive and self.DB.char.HasBodyguard then
         self.BodyguardFrame:Show()
     end
 end
@@ -214,14 +214,13 @@ function T:ZONE_CHANGED_NEW_AREA()
         if not self.BodyguardFrame:IsShowing() then return end
         self:Log("Banned zone, hiding", true)
         self.BodyguardFrame:Hide()
-    elseif self.LBG:Exists() and self.LBG:GetStatus() ~= self.LBG.Status.Inactive then
+    elseif self.DB.char.HasBodyguard and self.LBG:GetStatus() ~= self.LBG.Status.Inactive then
         self.BodyguardFrame:Show()
     end
 end
 
 function T:Enable()
     self.DB.profile.Enabled = true
-
 end
 
 function T:Disable()
