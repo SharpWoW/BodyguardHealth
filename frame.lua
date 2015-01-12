@@ -74,6 +74,7 @@ local function Create()
     frame.healthLabel:SetPoint("TOPLEFT", frame.healthBar, "TOPLEFT")
     frame.healthLabel:SetPoint("BOTTOMRIGHT", frame.healthBar, "BOTTOMRIGHT")
     frame.healthLabel:SetTextColor(1, 1, 1)
+    frame.healthLabel:SetText("No HP data")
 
     created = true
 
