@@ -221,6 +221,14 @@ function T:ZONE_CHANGED_NEW_AREA()
     end
 end
 
+function T:PLAYER_REGEN_DISABLED()
+    self.InCombat = true
+end
+
+function T:PLAYER_REGEN_ENABLED()
+    self.InCombat = false
+end
+
 function T:Enable()
     self.DB.profile.Enabled = true
 end

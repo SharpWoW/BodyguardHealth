@@ -35,7 +35,7 @@ local function Create()
     if created then return end
 
     -- A global name required for dropdown functionality
-    frame = CreateFrame("Frame", "BodyguardHealthFrame", UIParent)
+    frame = CreateFrame("Button", "BodyguardHealthFrame", UIParent, "SecureActionButtonTemplate")
 
     -- DEBUG
     bf.Frame = frame
@@ -156,6 +156,9 @@ end
 function bf:UpdateName(name)
     Create()
     frame.nameLabel:SetText(name)
+    if T.DB.profile.FrameSettings.MenuEnabled then
+        frame:SetAttribute("macrotext1", "/target " .. name)
+    end
 end
 
 function bf:UpdateStatus(status)
@@ -240,11 +243,18 @@ end
 function bf:SetMenu(enabled)
     Create()
     if enabled then
+        frame:EnableMouse(true)
+        frame:SetAttribute("type1", "macro")
+        local name = T.LBG:GetName()
+        if name then
+            frame:SetAttribute("macrotext1", "/target " .. name)
+        end
         frame:SetScript("OnMouseUp", function(self, button)
-            if button ~= "RightButton" then return end
+            if button ~= "RightButton" or T.InCombat then return end
             T.Dropdown:Show(frame)
         end)
     else
+        frame:SetAttribute("type1", nil)
         frame:SetScript("OnMouseUp", nil)
         frame:EnableMouse(false)
     end
