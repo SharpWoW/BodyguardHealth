@@ -156,7 +156,7 @@ end
 function bf:UpdateName(name)
     Create()
     frame.nameLabel:SetText(name)
-    if not T.DB.profile.FrameSettings.ClickThrough then
+    if not T.DB.profile.FrameSettings.ClickThrough and not T.InCombat then
         frame:SetAttribute("macrotext1", "/target " .. name)
     end
 end
