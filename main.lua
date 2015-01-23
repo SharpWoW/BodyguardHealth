@@ -51,7 +51,7 @@ local defaults = {
         CloseGossip = false,
         CloseGossipModifier = "control",
         FrameSettings = {
-            MenuEnabled = true,
+            ClickThrough = false,
             Width = 200,
             Height = 60,
             Scale = 1,
@@ -184,7 +184,7 @@ function T:ADDON_LOADED(name)
     end
 
     self.Dropdown:Create()
-    self.BodyguardFrame:SetMenu(self.DB.profile.FrameSettings.MenuEnabled)
+    self.BodyguardFrame:SetMenu(not self.DB.profile.FrameSettings.ClickThrough)
 
     self.Options:Initialize()
 

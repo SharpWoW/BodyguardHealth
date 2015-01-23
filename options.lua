@@ -424,13 +424,13 @@ local options = {
                 header4 = { order = 26, name = "Other options", type = "header" },
                 menuenabled = {
                     order = 27,
-                    name = "Menu enabled",
-                    desc = "Enables a right click menu on the health frame with some convenient options, frame is click-through when menu is disabled.",
+                    name = "Click-through",
+                    desc = "When frame is click-through, the menu and targeting capabilities are disabled.",
                     type = "toggle",
-                    get = function(info) return T.DB.profile.FrameSettings.MenuEnabled end,
+                    get = function(info) return T.DB.profile.FrameSettings.ClickThrough end,
                     set = function(info, val)
-                        T.DB.profile.FrameSettings.MenuEnabled = val
-                        bgframe:SetMenu(val)
+                        T.DB.profile.FrameSettings.ClickThrough = val
+                        bgframe:SetMenu(not val)
                     end
                 }
             }

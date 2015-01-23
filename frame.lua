@@ -156,7 +156,7 @@ end
 function bf:UpdateName(name)
     Create()
     frame.nameLabel:SetText(name)
-    if T.DB.profile.FrameSettings.MenuEnabled then
+    if not T.DB.profile.FrameSettings.ClickThrough then
         frame:SetAttribute("macrotext1", "/target " .. name)
     end
 end
@@ -258,7 +258,7 @@ function bf:SetMenu(enabled)
         frame:SetScript("OnMouseUp", nil)
         frame:EnableMouse(false)
     end
-    T.DB.profile.FrameSettings.MenuEnabled = enabled
+    T.DB.profile.FrameSettings.ClickThrough = not enabled
 end
 
 function bf:EnableMenu()
@@ -321,7 +321,7 @@ function bf:Lock()
 
     locked = true
 
-    if T.DB.profile.FrameSettings.MenuEnabled then
+    if not T.DB.profile.FrameSettings.ClickThrough then
         self:EnableMenu()
     else
         frame:EnableMouse(false)
