@@ -157,7 +157,7 @@ function bf:UpdateName(name)
     Create()
     frame.nameLabel:SetText(name)
     if not T.DB.profile.FrameSettings.ClickThrough and not T.InCombat then
-        frame:SetAttribute("macrotext1", "/target " .. name)
+        frame:SetAttribute("macrotext1", "/targetexact " .. name)
     end
 end
 
@@ -247,7 +247,7 @@ function bf:SetMenu(enabled)
         frame:SetAttribute("type1", "macro")
         local name = T.LBG:GetName()
         if name then
-            frame:SetAttribute("macrotext1", "/target " .. name)
+            frame:SetAttribute("macrotext1", "/targetexact " .. name)
         end
         frame:SetScript("OnMouseUp", function(self, button)
             if button ~= "RightButton" or T.InCombat then return end
