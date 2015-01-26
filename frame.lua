@@ -92,6 +92,8 @@ function bf:ResetSettings()
 end
 
 function bf:UpdateSettings()
+    if T.InCombat then return end
+
     Create()
 
     local settings = T.DB.profile.FrameSettings

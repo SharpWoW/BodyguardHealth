@@ -227,6 +227,7 @@ end
 
 function T:PLAYER_REGEN_ENABLED()
     self.InCombat = false
+    self.BodyguardFrame:UpdateSettings()
 end
 
 function T:Enable()
