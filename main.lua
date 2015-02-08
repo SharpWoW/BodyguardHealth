@@ -237,6 +237,21 @@ function T:PLAYER_REGEN_ENABLED()
     self.BodyguardFrame:UpdateSettings()
 end
 
+function T:PET_BATTLE_OPENING_START()
+    self.InPetBattle = true
+    self.FrameShowingPrePetBattle = self.BodyguardFrame:IsShowing()
+end
+
+function T:PET_BATTLE_CLOSE()
+    -- [petbattle] conditional returns false on second fire of PET_BATTLE_CLOSE
+    if SecureCmdOptionParse("[petbattle]") then return end
+    self.InPetBattle = false
+    if self.FrameShowingPrePetBattle then
+        self.FrameShowingPrePetBattle = false
+        self.BodyguardFrame:Show()
+    end
+end
+
 function T:QueueShow()
     if not self.InCombat then return end
     self.QueuedShow = true
