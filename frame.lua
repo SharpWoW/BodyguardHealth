@@ -272,6 +272,11 @@ function bf:DisableMenu()
 end
 
 function bf:Show(force)
+    if T.InCombat then
+        T:Log("Tried to show frame in combat, queueing action.", true)
+        T:QueueShow()
+        return
+    end
     if not force and (self:IsShowing() or not T.DB.profile.Enabled) then return end
     if not force then shown_by_unlock = false end
     Create()
@@ -280,6 +285,11 @@ function bf:Show(force)
 end
 
 function bf:Hide()
+    if T.InCombat then
+        T:Log("Tried to hide frame in combat, queueing action.", true)
+        T:QueueHide()
+        return
+    end
     if not self:IsShowing() then return end
     Create()
     frame:Hide()

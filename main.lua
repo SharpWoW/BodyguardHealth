@@ -227,7 +227,26 @@ end
 
 function T:PLAYER_REGEN_ENABLED()
     self.InCombat = false
+    if self.QueuedShow then
+        self.QueuedShow = false
+        self.BodyguardFrame:Show()
+    elseif self.QueuedHide then
+        self.QueuedHide = false
+        self.BodyguardFrame:Hide()
+    end
     self.BodyguardFrame:UpdateSettings()
+end
+
+function T:QueueShow()
+    if not self.InCombat then return end
+    self.QueuedShow = true
+    self.QueuedHide = false
+end
+
+function T:QueueHide()
+    if not self.InCombat then return end
+    self.QueuedHide = true
+    self.QueuedShow = false
 end
 
 function T:Enable()
