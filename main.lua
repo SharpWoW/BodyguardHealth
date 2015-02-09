@@ -240,6 +240,9 @@ end
 function T:PET_BATTLE_OPENING_START()
     self.InPetBattle = true
     self.FrameShowingPrePetBattle = self.BodyguardFrame:IsShowing()
+    if self.FrameShowingPrePetBattle then
+        self.BodyguardFrame:Hide()
+    end
 end
 
 function T:PET_BATTLE_CLOSE()
