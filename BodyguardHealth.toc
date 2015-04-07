@@ -1,4 +1,4 @@
-## Interface: 60000
+## Interface: 60100
 ## Title: Bodyguard Health
 ## Notes: Shows the health of the player's current bodyguard.
 ## Author: Sharparam
