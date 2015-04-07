@@ -421,9 +421,29 @@ local options = {
                         bgframe:UpdateHealthBar()
                     end
                 },
-                header4 = { order = 26, name = "Other options", type = "header" },
+                bartextstyle = {
+                    order = 26,
+                    name = "Health text style",
+                    desc = "Configures how the health text should be displayed on the bar.",
+                    type = "select",
+                    style = "dropdown",
+                    values = {
+                        NONE = "None (empty)",
+                        PERCENTAGE = "100%",
+                        SHORT = "18.3k",
+                        LONG = "18,300",
+                        MIXED = "18.3k (100%)"
+                    },
+                    get = function(info) return T.DB.profile.FrameSettings.HealthTextStyle end,
+                    set = function(info, value)
+                        T.DB.profile.FrameSettings.HealthTextStyle = value
+                        bgframe:UpdateSettings()
+                        bgframe:UpdateHealthBar()
+                    end
+                },
+                header4 = { order = 27, name = "Other options", type = "header" },
                 menuenabled = {
-                    order = 27,
+                    order = 28,
                     name = "Click-through",
                     desc = "When frame is click-through, the menu and targeting capabilities are disabled.",
                     type = "toggle",

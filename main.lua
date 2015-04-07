@@ -77,6 +77,7 @@ local defaults = {
                 G = 1,
                 B = 1
             },
+            HealthTextStyle = "PERCENTAGE",
             Backdrop = {
                 Background = "Blizzard Dialog Background",
                 Border = "Blizzard Tooltip",

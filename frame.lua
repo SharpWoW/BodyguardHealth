@@ -182,6 +182,41 @@ local health_warns = {}
 
 local shown_by_unlock = false
 
+local BreakUpLargeNumbers = BreakUpLargeNumbers
+
+local suffixes = {"M", "k"}
+
+-- Upvalue since this is used from combat events
+local format = string.format
+local gsub = string.gsub
+
+local function shorten(number)
+    local suffix = ""
+    local suffixIndex = 0
+
+    while number > 1000 and suffixIndex < #suffixes do
+        number = number / 1000
+        suffixIndex = suffixIndex + 1
+        suffix = suffixes[suffixIndex]
+    end
+
+    -- The gsub will strip trailing zeroes and decimal points when needed
+    -- 100.00 becomes 100, but 100.02 stays the same
+    return gsub(format("%.2f", number), "%.?0+$", "") .. suffix
+end
+
+local text_formatters = {
+    NONE = function() return "" end,
+    PERCENTAGE = function(health, maxHealth, pct) return format("%d%%", pct) end,
+    SHORT = function(health) return shorten(health) end,
+    LONG = function(health)
+        return BreakUpLargeNumbers(health)
+    end,
+    MIXED = function(health, maxHealth, pct)
+        return format("%s (%d%%)", shorten(health), pct)
+    end
+}
+
 function bf:UpdateHealthBar(health, maxHealth)
     health = health or T.DB.char.Health or T.LBG:GetHealth()
     maxHealth = maxHealth or T.DB.char.MaxHealth or T.LBG:GetMaxHealth()
@@ -215,7 +250,11 @@ function bf:UpdateHealthBar(health, maxHealth)
 
     local percentage = round(ratio * 100)
 
-    frame.healthLabel:SetText(("%d%%"):format(percentage))
+    local style = T.DB.profile.FrameSettings.HealthTextStyle
+
+    local text = text_formatters[style](health, maxHealth, percentage)
+
+    frame.healthLabel:SetText(text)
 
     if T.LBG:GetStatus() == T.LBG.Status.Inactive then return end
 
