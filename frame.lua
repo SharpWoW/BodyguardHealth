@@ -184,7 +184,7 @@ local shown_by_unlock = false
 
 local BreakUpLargeNumbers = BreakUpLargeNumbers
 
-local suffixes = {"M", "k"}
+local suffixes = {"k", "M"}
 
 -- Upvalue since this is used from combat events
 local format = string.format
