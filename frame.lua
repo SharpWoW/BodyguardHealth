@@ -107,6 +107,10 @@ function bf:UpdateSettings()
         frame:SetPoint(settings.Point or "CENTER", settings.Offset.X or 0, settings.Offset.Y or 0)
     end
 
+    if settings.Scale <= 0 then
+        settings.Scale = 1
+    end
+
     frame:SetScale(settings.Scale)
 
     local lsm = T.LSM
