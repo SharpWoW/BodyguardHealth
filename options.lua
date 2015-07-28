@@ -353,11 +353,7 @@ local options = {
                     },
                     get = function(info) return T.DB.profile.FrameSettings.FontFlags or "NONE" end,
                     set = function(info, val)
-                        if val == "NONE" then
-                            T.DB.profile.FrameSettings.FontFlags = nil
-                        else
-                            T.DB.profile.FrameSettings.FontFlags = val
-                        end
+                        T.DB.profile.FrameSettings.FontFlags = val
                         bgframe:UpdateSettings()
                     end
                 },
