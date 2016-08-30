@@ -143,6 +143,8 @@ function bf:UpdateSettings()
     frame.healthLabel:SetFont(lsm:Fetch(lsm.MediaType.FONT, settings.Font), settings.FontSize, fontFlags)
     frame.healthLabel:SetTextColor(settings.FontColor.R, settings.FontColor.G, settings.FontColor.B, settings.FontColor.A)
 
+    frame:SetAlpha(settings.Opacity / 100)
+
     self:SaveSettings()
 end
 
@@ -390,4 +392,10 @@ function bf:Lock()
     end
 
     shown_by_unlock = false
+end
+
+function bf:EnterCombat()
+    if T.DB.profile.FrameSettings.UseCombatOpacity then
+        frame:SetAlpha(T.DB.profile.FrameSettings.CombatOpacity / 100)
+    end
 end
