@@ -116,7 +116,10 @@ local defaults = {
                     Top = 2.5,
                     Bottom = 2.5
                 }
-            }
+            },
+            Opacity = 100,
+            UseCombatOpacity = false,
+            CombatOpacity = 100
         }
     },
     char = {
@@ -238,6 +241,7 @@ end
 
 function T:PLAYER_REGEN_DISABLED()
     self.InCombat = true
+    self.BodyguardFrame:EnterCombat()
 end
 
 function T:PLAYER_REGEN_ENABLED()

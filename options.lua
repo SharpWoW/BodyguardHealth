@@ -448,6 +448,44 @@ local options = {
                         T.DB.profile.FrameSettings.ClickThrough = val
                         bgframe:SetMenu(not val)
                     end
+                },
+                opacity = {
+                    order = 29,
+                    name = "Opacity",
+                    desc = "Set the opacity of the frame (100 is fully visible).",
+                    type = "range",
+                    min = 0,
+                    max = 100,
+                    step = 1,
+                    get = function(info) return T.DB.profile.FrameSettings.Opacity end,
+                    set = function(info, val)
+                        T.DB.profile.FrameSettings.Opacity = val
+                        bgframe:UpdateSettings()
+                    end
+                },
+                usecombatopacity = {
+                    order = 30,
+                    name = "Use combat opacity",
+                    desc = "Use a different opacity setting while in combat.",
+                    type = "toggle",
+                    get = function(info) return T.DB.profile.FrameSettings.UseCombatOpacity end,
+                    set = function(info, val)
+                        T.DB.profile.FrameSettings.UseCombatOpacity = val
+                    end
+                },
+                combatopacity = {
+                    order = 31,
+                    name = "In-Combat Opacity",
+                    desc = "Set the opacity of the frame while in combat (100 is fully visible).",
+                    type = "range",
+                    min = 0,
+                    max = 100,
+                    step = 1,
+                    disabled = function() return not T.DB.profile.FrameSettings.UseCombatOpacity end,
+                    get = function(info) return T.DB.profile.FrameSettings.CombatOpacity end,
+                    set = function(info, val)
+                        T.DB.profile.FrameSettings.CombatOpacity = val
+                    end
                 }
             }
         }
