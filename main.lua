@@ -22,14 +22,28 @@
 
 local NAME, T = ...
 
-local CONTINENT_DRAENOR = 7
-
--- Draenor zones in which the bodyguard can't be active,
--- the frame is hidden if player is in one of these zones
-local BODYGUARD_BANNED_ZONES = {
-    [978] = true,  -- Ashran
-    [1009] = true, -- Stormshield
-    [1011] = true  -- Warspear
+-- The frame is only shown if the player is in one of these zones.
+local ENABLED_ZONES = {
+    [962] = true, -- Draenor
+    [941] = true, -- Frostfire Ridge
+    [976] = true, -- Frostwall
+    [949] = true, -- Gorgrond
+    [971] = true, -- Lunarfall
+    [950] = true, -- Nagrand
+    [947] = true, -- Shadowmoon Valley
+    [948] = true, -- Spires of Arak
+    [946] = true, -- Talador
+    [945] = true, -- Tanaan Jungle
+    [970] = true, -- Tanaan Jungle - Assault on the Dark Portal
+    [1007] = true, -- Broken Isles
+    [1015] = true, -- Aszuna
+    [1021] = true, -- Broken Shore
+    [1014] = true, -- Dalaran
+    [1098] = true, -- Eye of Azshara
+    [1024] = true, -- Highmountain
+    [1017] = true, -- Stormheim
+    [1033] = true, -- Suramar
+    [1018] = true  -- Val'sharah
 }
 
 local function IsValidZone()
@@ -37,7 +51,7 @@ local function IsValidZone()
     local cid = GetCurrentMapContinent()
     local aid = GetCurrentMapAreaID()
     T:Log(("IVZ: cid == %d, aid == %d (%s)"):format(cid, aid, GetMapNameByID(aid) or "Unknown"), true)
-    local valid = cid == CONTINENT_DRAENOR and not BODYGUARD_BANNED_ZONES[aid]
+    local valid = ENABLED_ZONES[aid]
     T.DB.char.IsInValidZone = valid
     return valid
 end
