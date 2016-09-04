@@ -218,7 +218,7 @@ function T:PLAYER_ENTERING_WORLD()
         return
     end
     if not IsValidZone() then
-        self:Log("PEW: Not in Draenor, hiding.", true)
+        self:Log("PEW: Not in a valid zone, hiding.", true)
         self.BodyguardFrame:Hide()
     elseif showing then
         self.BodyguardFrame:UpdateSettings()
