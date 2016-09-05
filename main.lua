@@ -38,7 +38,6 @@ local ENABLED_ZONES = {
     [1007] = true, -- Broken Isles
     [1015] = true, -- Aszuna
     [1021] = true, -- Broken Shore
-    [1014] = true, -- Dalaran
     [1098] = true, -- Eye of Azshara
     [1024] = true, -- Highmountain
     [1017] = true, -- Stormheim
