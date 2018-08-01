@@ -41,11 +41,17 @@ local ENABLED_ZONES = {
 }
 
 local function GetCurrentMapContinent()
+    if not MapUtil then return 0 end
     return MapUtil.GetMapParentInfo(C_Map.GetBestMapForUnit("player"), Enum.UIMapType.Continent).mapID
 end
 
 local function GetCurrentMapZone()
-    return MapUtil.GetMapParentInfo(C_Map.GetBestMapForUnit("player"), Enum.UIMapType.Zone).mapID
+    if not MapUtil or not C_Map then return 0 end
+    local currentMapId = C_Map.GetBestMapForUnit("player")
+    if currentMapId == nil then return 0 end
+    local parentInfo = MapUtil.GetMapParentInfo(C_Map.GetBestMapForUnit("player"), Enum.UIMapType.Zone)
+    if not parentInfo then return currentMapId end
+    return parentInfo.mapID
 end
 
 local function GetCurrentMapId()
