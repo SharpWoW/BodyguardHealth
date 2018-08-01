@@ -24,33 +24,45 @@ local NAME, T = ...
 
 -- The frame is only shown if the player is in one of these zones.
 local ENABLED_ZONES = {
-    [962] = true, -- Draenor
-    [941] = true, -- Frostfire Ridge
-    [976] = true, -- Frostwall
-    [949] = true, -- Gorgrond
-    [971] = true, -- Lunarfall
-    [950] = true, -- Nagrand
-    [947] = true, -- Shadowmoon Valley
-    [948] = true, -- Spires of Arak
-    [946] = true, -- Talador
-    [945] = true, -- Tanaan Jungle
-    [970] = true, -- Tanaan Jungle - Assault on the Dark Portal
-    [1007] = true, -- Broken Isles
-    [1015] = true, -- Aszuna
-    [1021] = true, -- Broken Shore
-    [1098] = true, -- Eye of Azshara
-    [1024] = true, -- Highmountain
-    [1017] = true, -- Stormheim
-    [1033] = true, -- Suramar
-    [1018] = true  -- Val'sharah
+    [525] = true, -- Frostfire Ridge
+    [543] = true, -- Gorgrond
+    [550] = true, -- Nagrand
+    [539] = true, -- Shadowmoon Valley
+    [542] = true, -- Spires of Arak
+    [535] = true, -- Talador
+    [534] = true, -- Tanaan Jungle
+    [630] = true, -- Aszuna
+    [646] = true, -- Broken Shore
+    [790] = true, -- Eye of Azshara
+    [650] = true, -- Highmountain
+    [634] = true, -- Stormheim
+    [680] = true, -- Suramar
+    [641] = true  -- Val'sharah
 }
 
+local function GetCurrentMapContinent()
+    return MapUtil.GetMapParentInfo(C_Map.GetBestMapForUnit("player"), Enum.UIMapType.Continent).mapID
+end
+
+local function GetCurrentMapZone()
+    return MapUtil.GetMapParentInfo(C_Map.GetBestMapForUnit("player"), Enum.UIMapType.Zone).mapID
+end
+
+local function GetCurrentMapId()
+    return C_Map.GetBestMapForUnit("player")
+end
+
+local function GetMapNameById(mapId)
+    return C_Map.GetMapInfo(mapId).name
+end
+
 local function IsValidZone()
-    SetMapToCurrentZone()
     local cid = GetCurrentMapContinent()
-    local aid = GetCurrentMapAreaID()
-    T:Log(("IVZ: cid == %d, aid == %d (%s)"):format(cid, aid, GetMapNameByID(aid) or "Unknown"), true)
-    local valid = ENABLED_ZONES[aid]
+    local zid = GetCurrentMapZone()
+    local isDungeon = C_Map.GetMapInfo(C_Map.GetBestMapForUnit("player")).mapType == Enum.UIMapType.Dungeon
+    if isDungeon then return false end
+    T:Log(("IVZ: cid == %d, zid == %d (%s)"):format(cid, zid, GetMapNameById(zid) or "Unknown"), true)
+    local valid = ENABLED_ZONES[zid]
     T.DB.char.IsInValidZone = valid
     return valid
 end
