@@ -7,7 +7,7 @@ externals:
         url: svn://svn.wowace.com/wow/libstub/mainline/trunk
         tag: latest
     lib/LibBodyguard-1.0:
-        url: git://git.wowace.com/wow/libbodyguard-1-0/mainline.git
+        url: https://github.com/SharpWoW/LibBodyguard-1.0
         tag: latest
     lib/CallbackHandler-1.0:
         url: svn://svn.wowace.com/wow/callbackhandler/mainline/trunk/CallbackHandler-1.0
